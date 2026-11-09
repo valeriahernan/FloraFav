@@ -243,7 +243,9 @@ export function createPlantRenderer(holder){
       if(!current.species)return;
 
       const {species,age,sentence}=current;
-      const length=species.length*.38;
+      rules:{
+      const progress=(age-1)/99;
+      const length=species.length*(.38+progress*.12);
 
       p.push();
       p.translate(p.width/2+dragX,p.height-20+dragY);
