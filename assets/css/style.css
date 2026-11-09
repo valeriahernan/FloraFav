@@ -15,7 +15,7 @@ html{
 body{
   margin:0;
   min-height:100vh;
-  padding:24px;
+  padding:16px;
   background-color:var(--desktop);
   background-image:url("./photos/18.png");
   background-size:cover;
@@ -27,27 +27,28 @@ body{
 }
 
 .flora-window{
-  width:850px;
+  width:760px;
   max-width:100%;
   margin:0 auto;
 }
 
 .window-body{
-  padding:12px;
+  padding:10px;
 }
 
 .app-layout{
   display:flex;
-  gap:14px;
-  min-height:430px;
+  align-items:stretch;
+  gap:12px;
+  min-height:360px;
 }
 
 .sidebar{
-  width:210px;
+  width:195px;
   flex-shrink:0;
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:8px;
 }
 
 .panel-label{
@@ -57,7 +58,8 @@ body{
 
 .tree-view{
   flex:1;
-  min-height:250px;
+  min-height:190px;
+  max-height:250px;
   overflow-y:auto;
   background:white;
   margin:0;
@@ -65,7 +67,7 @@ body{
 }
 
 .tree-view li{
-  padding:6px;
+  padding:5px;
   list-style:none;
   cursor:pointer;
   user-select:none;
@@ -84,11 +86,33 @@ body{
 .genetics-panel{
   display:flex;
   flex-direction:column;
-  gap:7px;
+  gap:5px;
+  min-width:0;
+  margin:0;
+  padding:8px;
+}
+
+.genetics-panel label{
+  margin:0;
+}
+
+.genetics-panel select{
+  display:block;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  height:24px;
 }
 
 .genetics-panel button{
+  width:100%;
+  max-width:100%;
+  min-height:24px;
   cursor:pointer;
+}
+
+#fusionarPlantas{
+  margin-top:3px;
 }
 
 .main-content{
@@ -96,13 +120,13 @@ body{
   min-width:0;
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:10px;
 }
 
 .slider-box{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   flex-wrap:wrap;
 }
 
@@ -113,14 +137,15 @@ body{
 
 .canvas-panel{
   width:100%;
-  min-height:300px;
+  min-height:280px;
   background:var(--canvas);
   overflow:hidden;
 }
 
 #canvas-holder{
   width:100%;
-  min-height:300px;
+  height:280px;
+  min-height:280px;
   overflow:hidden;
   cursor:grab;
   touch-action:none;
@@ -140,10 +165,10 @@ body{
 .status-bar{
   display:flex;
   flex-wrap:wrap;
-  margin-top:12px;
+  margin-top:10px;
 }
 
-@media(max-width:600px){
+@media(max-width:650px){
   body{
     padding:8px;
     background-attachment:scroll;
@@ -168,7 +193,7 @@ body{
 
   .tree-view{
     min-height:100px;
-    max-height:140px;
+    max-height:150px;
   }
 
   .main-content{
@@ -176,15 +201,12 @@ body{
   }
 
   .canvas-panel{
-    min-height:260px;
+    min-height:240px;
   }
 
   #canvas-holder{
-    min-height:260px;
-  }
-
-  #canvas-holder canvas{
-    max-width:100%;
+    height:240px;
+    min-height:240px;
   }
 
   .status-bar{
@@ -194,14 +216,4 @@ body{
   .status-bar-field{
     flex:1 1 100%;
   }
-}
-
-.genetics-panel select{
-  width:100%;
-  max-width:100%;
-}
-
-#fusionarPlantas{
-  margin-top:5px;
-  cursor:pointer;
 }
