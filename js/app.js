@@ -14,16 +14,26 @@ const parentA=document.getElementById("hybridParentA");
 const parentB=document.getElementById("hybridParentB");
 const fusionButton=document.getElementById("fusionarPlantas");
 
-const gardenButton=document.getElementById("guardarPlanta");
-const gardenSection=document.getElementById("garden");
+const saveButton=document.getElementById("savePlant");
+
+const labTab=document.getElementById("labTab");
+const gardenTab=document.getElementById("gardenTab");
+
+const labView=document.getElementById("laboratory-view");
+const gardenView=document.getElementById("garden-view");
+
 const gardenGrid=document.getElementById("garden-grid");
+const gardenEmpty=document.getElementById("garden-empty");
+const gardenCount=document.getElementById("garden-count");
+const gardenTotal=document.getElementById("garden-total");
+const goToLab=document.getElementById("goToLab");
+
+const STORAGE_KEY="florafav-garden";
 
 let activeName="fleabane";
 let activeSpecies;
 let originalSpecies;
 let renderer;
-
-const STORAGE_KEY="florafav-garden";
 
 function cloneSpecies(source){
   return {
@@ -34,10 +44,14 @@ function cloneSpecies(source){
   };
 }
 
+// JARDÍN
+
 function getGarden(){
   try{
-    return JSON.parse(localStorage.getItem(STORAGE_KEY))||[];
-  }catch{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return Array.isArray(saved)?saved:[];
+  }catch(error){
+    console.error("Error al cargar el jardín:",error);
     return [];
   }
 }
@@ -46,38 +60,77 @@ function saveGarden(plants){
   localStorage.setItem(STORAGE_KEY,JSON.stringify(plants));
 }
 
+function updateGardenCount(total){
+  gardenCount.textContent=total;
+  gardenTotal.textContent=`${total} ${total===1?"plant":"plants"}`;
+}
+
 function renderGarden(){
-  if(!gardenGrid)return;
-
   const plants=getGarden();
-  gardenGrid.innerHTML="";
 
-  plants.forEach((plant,index)=>{
+  gardenGrid.innerHTML="";
+  gardenEmpty.hidden=plants.length>0;
+
+  updateGardenCount(plants.length);
+
+  plants.forEach(plant=>{
     const card=document.createElement("article");
-    card.className="garden-plant";
+    card.className="garden-card";
+
+    const info=document.createElement("div");
+    info.className="garden-card-info";
 
     const name=document.createElement("h3");
     name.textContent=plant.name;
 
-    const details=document.createElement("p");
-    details.textContent=plant.hybrid?"Híbrido":plant.mutationLevel?"Mutación":"Especie";
+    const type=document.createElement("p");
+    type.textContent=plant.hybrid
+      ?"Híbrido"
+      :plant.mutationLevel
+      ?"Mutación"
+      :"Especie original";
 
     const date=document.createElement("span");
-    date.textContent=new Date(plant.savedAt).toLocaleDateString();
+    date.textContent=plant.savedAt
+      ?new Date(plant.savedAt).toLocaleDateString("es-CL")
+      :"";
 
-    const remove=document.createElement("button");
-    remove.type="button";
-    remove.textContent="×";
-    remove.setAttribute("aria-label","Eliminar planta");
+    info.append(name,type,date);
 
-    remove.addEventListener("click",()=>{
-      const updated=getGarden();
-      updated.splice(index,1);
+    const actions=document.createElement("div");
+    actions.className="garden-card-actions";
+
+    const openButton=document.createElement("button");
+    openButton.type="button";
+    openButton.textContent="Abrir";
+
+    openButton.addEventListener("click",()=>{
+      activeSpecies=cloneSpecies(plant);
+      originalSpecies=cloneSpecies(plant);
+      activeName=null;
+
+      slider.value=plant.age||3;
+
+      items.forEach(item=>{
+        item.classList.remove("selected");
+      });
+
+      updatePlant();
+      setView("laboratory");
+    });
+
+    const deleteButton=document.createElement("button");
+    deleteButton.type="button";
+    deleteButton.textContent="Eliminar";
+
+    deleteButton.addEventListener("click",()=>{
+      const updated=getGarden().filter(item=>item.id!==plant.id);
       saveGarden(updated);
       renderGarden();
     });
 
-    card.append(name,details,date,remove);
+    actions.append(openButton,deleteButton);
+    card.append(info,actions);
     gardenGrid.appendChild(card);
   });
 }
@@ -87,6 +140,8 @@ function saveCurrentPlant(){
 
   const savedPlant={
     ...cloneSpecies(activeSpecies),
+    id:crypto.randomUUID(),
+    age:Number(slider.value),
     savedAt:new Date().toISOString()
   };
 
@@ -94,15 +149,45 @@ function saveCurrentPlant(){
   saveGarden(plants);
   renderGarden();
 
-  if(gardenButton){
-    gardenButton.textContent="Guardada ✓";
-    setTimeout(()=>{
-      gardenButton.textContent="Guardar en jardín";
-    },1500);
+  saveButton.textContent="✓ Guardada";
+
+  setTimeout(()=>{
+    saveButton.textContent="+ Guardar en jardín";
+  },1500);
+}
+
+// NAVEGACIÓN
+
+function setView(view){
+  const isGarden=view==="garden";
+
+  labView.hidden=isGarden;
+  gardenView.hidden=!isGarden;
+
+  labTab.classList.toggle("active",!isGarden);
+  gardenTab.classList.toggle("active",isGarden);
+
+  if(isGarden){
+    renderGarden();
+  }else{
+    renderer.resize();
   }
 }
 
-// Cargar progenitores
+labTab.addEventListener("click",()=>{
+  setView("laboratory");
+});
+
+gardenTab.addEventListener("click",()=>{
+  setView("garden");
+});
+
+goToLab.addEventListener("click",()=>{
+  setView("laboratory");
+});
+
+// PROGENITORES
+
 Object.entries(species).forEach(([id,plant])=>{
   parentA.add(new Option(plant.name,id));
   parentB.add(new Option(plant.name,id));
@@ -111,17 +196,26 @@ Object.entries(species).forEach(([id,plant])=>{
 parentA.value="fleabane";
 parentB.value="clover";
 
+// RENDERIZADO
+
 function updatePlant(){
+  if(!activeSpecies)return;
+
   const age=Number(slider.value);
   ageValue.textContent=age;
 
   try{
     const sentence=generateLSystem(activeSpecies,age);
+
     renderer.update(sentence,activeSpecies,age);
 
     status.textContent="Current: "+activeSpecies.name+
-      (activeSpecies.hybrid?" | Híbrido":
-      activeSpecies.mutationLevel?" | Mutación":"");
+      (activeSpecies.hybrid
+        ?" | Híbrido"
+        :activeSpecies.mutationLevel
+        ?" | Mutación"
+        :"");
+
   }catch(error){
     status.textContent="Error de crecimiento";
     console.error(error);
@@ -138,11 +232,16 @@ function changeSpecies(name){
   slider.value=3;
 
   items.forEach(item=>{
-    item.classList.toggle("selected",item.dataset.especie===name);
+    item.classList.toggle(
+      "selected",
+      item.dataset.especie===name
+    );
   });
 
   updatePlant();
 }
+
+// SELECCIÓN DE ESPECIES
 
 items.forEach(item=>{
   item.addEventListener("click",()=>{
@@ -152,8 +251,11 @@ items.forEach(item=>{
 
 slider.addEventListener("input",updatePlant);
 
+// MUTACIONES
+
 document.getElementById("mutarPlanta").addEventListener("click",()=>{
   activeSpecies=mutateSpecies(activeSpecies);
+  activeName=null;
   updatePlant();
 });
 
@@ -161,6 +263,8 @@ document.getElementById("reiniciarPlanta").addEventListener("click",()=>{
   activeSpecies=cloneSpecies(originalSpecies);
   updatePlant();
 });
+
+// HIBRIDACIÓN
 
 fusionButton.addEventListener("click",()=>{
   const first=species[parentA.value];
@@ -170,20 +274,22 @@ fusionButton.addEventListener("click",()=>{
 
   activeSpecies=hybridizeSpecies(first,second);
   originalSpecies=cloneSpecies(activeSpecies);
+  activeName=null;
+
   slider.value=3;
 
-  items.forEach(item=>item.classList.remove("selected"));
+  items.forEach(item=>{
+    item.classList.remove("selected");
+  });
 
   updatePlant();
 });
 
-if(gardenButton){
-  gardenButton.addEventListener("click",saveCurrentPlant);
-}
+// GUARDAR PLANTA
 
-if(gardenSection){
-  renderGarden();
-}
+saveButton.addEventListener("click",saveCurrentPlant);
+
+// INICIALIZACIÓN
 
 renderer=createPlantRenderer(holder);
 
@@ -192,4 +298,7 @@ const observer=new ResizeObserver(()=>{
 });
 
 observer.observe(holder);
+
+renderGarden();
 changeSpecies(activeName);
+setView("laboratory");
