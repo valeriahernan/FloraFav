@@ -13,21 +13,27 @@ export function createPlantRenderer(holder){
   const pointers=new Map();
 
   instance=new p5(p=>{
+
+    // CONFIGURACIÓN DEL CANVAS
     p.setup=()=>{
       const canvas=p.createCanvas(
-  Math.max(1,holder.clientWidth),
-  holder.clientHeight||280
-);
+        Math.max(1,holder.clientWidth),
+        holder.clientHeight||280
+      );
+
       canvas.parent(holder);
+
       const el=canvas.elt;
       el.style.touchAction="none";
 
+      // ZOOM CON RUEDA
       el.addEventListener("wheel",e=>{
         e.preventDefault();
         zoom=Math.max(.5,Math.min(3,zoom*(e.deltaY<0?1.1:.9)));
         p.redraw();
       },{passive:false});
 
+      // ARRASTRE Y ZOOM TÁCTIL
       el.addEventListener("pointerdown",e=>{
         pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
         el.setPointerCapture(e.pointerId);
@@ -39,7 +45,10 @@ export function createPlantRenderer(holder){
 
         if(pointers.size===2){
           const pts=[...pointers.values()];
-          lastPinch=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+          lastPinch=Math.hypot(
+            pts[0].x-pts[1].x,
+            pts[0].y-pts[1].y
+          );
         }
       });
 
@@ -90,8 +99,10 @@ export function createPlantRenderer(holder){
       p.redraw();
     };
 
+    // DIBUJAR HOJAS
     function drawLeaf(type,size){
       const color=current.species.stem;
+
       p.push();
       p.noStroke();
       p.fill(...color);
@@ -130,6 +141,7 @@ export function createPlantRenderer(holder){
       p.pop();
     }
 
+    // DIBUJAR FLORES
     function drawFlower(type,color,size,count){
       p.push();
       p.noStroke();
@@ -193,9 +205,21 @@ export function createPlantRenderer(holder){
         p.fill(...color);
         p.beginShape();
         p.vertex(-size*.2,-size*.65);
-        p.bezierVertex(-size*.2,-size*.2,-size*.65,-size*.05,-size*.5,size*.15);
-        p.bezierVertex(-size*.2,size*.35,size*.2,size*.35,size*.5,size*.15);
-        p.bezierVertex(size*.65,-size*.05,size*.2,-size*.2,size*.2,-size*.65);
+        p.bezierVertex(
+          -size*.2,-size*.2,
+          -size*.65,-size*.05,
+          -size*.5,size*.15
+        );
+        p.bezierVertex(
+          -size*.2,size*.35,
+          size*.2,size*.35,
+          size*.5,size*.15
+        );
+        p.bezierVertex(
+          size*.65,-size*.05,
+          size*.2,-size*.2,
+          size*.2,-size*.65
+        );
         p.endShape(p.CLOSE);
         p.fill(255,220,220);
         p.circle(0,size*.12,size*.13);
@@ -238,17 +262,21 @@ export function createPlantRenderer(holder){
       p.pop();
     }
 
+    // DIBUJAR LA PLANTA
     p.draw=()=>{
       p.clear();
+
       if(!current.species)return;
 
       const {species,age,sentence}=current;
-      rules:{
       const progress=(age-1)/99;
       const length=species.length*(.38+progress*.12);
 
       p.push();
-      p.translate(p.width/2+dragX,p.height-20+dragY);
+      p.translate(
+        p.width/2+dragX,
+        p.height-20+dragY
+      );
       p.scale(zoom);
       p.rotate(-p.HALF_PI);
 
@@ -260,16 +288,22 @@ export function createPlantRenderer(holder){
         if(char==="F"){
           p.line(0,0,length,0);
           p.translate(length,0);
+
         }else if(char==="+"){
           p.rotate(p.radians(species.angle));
+
         }else if(char==="-"){
           p.rotate(-p.radians(species.angle));
+
         }else if(char==="["){
           p.push();
+
         }else if(char==="]"){
           p.pop();
+
         }else if(char==="L"){
           drawLeaf(species.leafType,species.leafSize);
+
         }else if(char==="B"){
           drawFlower(
             species.flowerType,
@@ -282,21 +316,25 @@ export function createPlantRenderer(holder){
 
       p.pop();
     };
+
   });
 
+  // ACTUALIZAR Y REDIMENSIONAR
   return {
-  update(sentence,species,age){
-    current={sentence,species,age};
-    if(ready)instance.redraw();
-  },
-  resize(){
-    if(!ready)return;
-    instance.resizeCanvas(
-      Math.max(1,holder.clientWidth),
-      holder.clientHeight||280
-    );
-    instance.redraw();
-  }
-};
+    update(sentence,species,age){
+      current={sentence,species,age};
+      if(ready)instance.redraw();
+    },
 
+    resize(){
+      if(!ready)return;
+
+      instance.resizeCanvas(
+        Math.max(1,holder.clientWidth),
+        holder.clientHeight||280
+      );
+
+      instance.redraw();
+    }
+  };
 }
