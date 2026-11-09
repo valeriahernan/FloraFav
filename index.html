@@ -27,42 +27,35 @@
     <div class="app-layout">
 
       <aside class="sidebar">
+  <p class="panel-label">Selecciona Planta:</p>
 
-        <p class="panel-label">Selecciona Planta:</p>
+  <ul class="tree-view" id="listaPlantas">
+    <li class="selected" data-especie="fleabane">🌿 Erigerón</li>
+    <li data-especie="clover">🍀 Trébol</li>
+    <li data-especie="violet">🌸 Violeta</li>
+    <li data-especie="cosmos">Cosmos</li>
+    <li data-especie="aciano">Aciano</li>
+    <li data-especie="amapola">Amapola</li>
+    <li data-especie="dedalera">Dedalera</li>
+    <li data-especie="lupino">Lupino</li>
+    <li data-especie="pasionaria">Pasionaria</li>
+  </ul>
 
-        <ul class="tree-view" id="listaPlantas">
-          <li class="selected" data-especie="fleabane">🌿 Erigerón</li>
-          <li data-especie="clover">🍀 Trébol</li>
-          <li data-especie="violet">🌸 Violeta</li>
-          <li data-especie="cosmos">Cosmos</li>
-          <li data-especie="aciano">Aciano</li>
-          <li data-especie="amapola">Amapola</li>
-          <li data-especie="dedalera">Dedalera</li>
-          <li data-especie="lupino">Lupino</li>
-          <li data-especie="pasionaria">Pasionaria</li>
-        </ul>
+  <fieldset class="genetics-panel">
+    <legend>Laboratorio genético</legend>
+    <label for="hybridParentA">Progenitor A:</label>
+    <select id="hybridParentA"></select>
+    <label for="hybridParentB">Progenitor B:</label>
+    <select id="hybridParentB"></select>
+    <button id="fusionarPlantas" type="button">🧬 Fusionar plantas</button>
+  </fieldset>
 
-        <fieldset class="genetics-panel">
-          <legend>Laboratorio genético</legend>
-
-          <label for="hybridParentA">Progenitor A:</label>
-          <select id="hybridParentA"></select>
-
-          <label for="hybridParentB">Progenitor B:</label>
-          <select id="hybridParentB"></select>
-
-          <button id="fusionarPlantas" type="button">
-            🧬 Fusionar plantas
-          </button>
-        </fieldset>
-
-        <fieldset class="genetics-panel">
-          <legend>Mutaciones</legend>
-          <button id="mutarPlanta" type="button">Mutación Random</button>
-          <button id="reiniciarPlanta" type="button">Resetear Planta</button>
-        </fieldset>
-
-      </aside>
+  <fieldset class="genetics-panel">
+    <legend>Mutaciones</legend>
+    <button id="mutarPlanta" type="button">Mutación Random</button>
+    <button id="reiniciarPlanta" type="button">Resetear Planta</button>
+  </fieldset>
+</aside>
 
       <section class="main-content">
 

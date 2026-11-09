@@ -3,7 +3,6 @@ import {species} from "./species.js";
 import {generateLSystem} from "./engine.js";
 import {mutateSpecies,hybridizeSpecies} from "./genetics.js";
 import {createPlantRenderer} from "./renderer.js";
-import {mutateSpecies,hybridizeSpecies} from "./genetics.js";
 
 const holder=document.getElementById("canvas-holder");
 const slider=document.getElementById("edadSlider");
@@ -29,7 +28,7 @@ function cloneSpecies(source){
   };
 }
 
-// Cargar las especies en los selectores
+// Cargar progenitores
 Object.entries(species).forEach(([id,plant])=>{
   parentA.add(new Option(plant.name,id));
   parentB.add(new Option(plant.name,id));
@@ -45,14 +44,11 @@ function updatePlant(){
   try{
     const sentence=generateLSystem(activeSpecies,age);
     renderer.update(sentence,activeSpecies,age);
-
     status.textContent="Current: "+activeSpecies.name+
-      (activeSpecies.hybrid?" | Hybrid specimen":
-      activeSpecies.mutationLevel?" | Mutation: "+activeSpecies.mutationLevel:
-      " | Original specimen");
-
+      (activeSpecies.hybrid?" | Híbrido":
+      activeSpecies.mutationLevel?" | Mutación":"");
   }catch(error){
-    status.textContent="Growth limit reached";
+    status.textContent="Error de crecimiento";
     console.error(error);
   }
 }
@@ -67,38 +63,30 @@ function changeSpecies(name){
   slider.value=3;
 
   items.forEach(item=>{
-    item.classList.toggle(
-      "selected",
-      item.dataset.especie===name
-    );
+    item.classList.toggle("selected",item.dataset.especie===name);
   });
 
   updatePlant();
 }
 
-// Selección de especies originales
 items.forEach(item=>{
   item.addEventListener("click",()=>{
     changeSpecies(item.dataset.especie);
   });
 });
 
-// Crecimiento
 slider.addEventListener("input",updatePlant);
 
-// Mutación
 document.getElementById("mutarPlanta").addEventListener("click",()=>{
   activeSpecies=mutateSpecies(activeSpecies);
   updatePlant();
 });
 
-// Reiniciar especie o híbrido
 document.getElementById("reiniciarPlanta").addEventListener("click",()=>{
   activeSpecies=cloneSpecies(originalSpecies);
   updatePlant();
 });
 
-// Hibridación
 fusionButton.addEventListener("click",()=>{
   const first=species[parentA.value];
   const second=species[parentB.value];
@@ -107,15 +95,13 @@ fusionButton.addEventListener("click",()=>{
 
   activeSpecies=hybridizeSpecies(first,second);
   originalSpecies=cloneSpecies(activeSpecies);
-  activeName=activeSpecies.name;
+  slider.value=3;
 
   items.forEach(item=>item.classList.remove("selected"));
 
-  slider.value=3;
   updatePlant();
 });
 
-// Iniciar renderer
 renderer=createPlantRenderer(holder);
 
 const observer=new ResizeObserver(()=>{
@@ -123,6 +109,4 @@ const observer=new ResizeObserver(()=>{
 });
 
 observer.observe(holder);
-
-// Mostrar primera especie
 changeSpecies(activeName);
