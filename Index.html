@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador Botánico Procedimental</title>
+  <!-- Cargamos p5.js para los gráficos interactivos -->
+  <script src="https://cloudflare.com"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #55aaaa; /* Fondo verde azulado retro */
+      font-family: monospace;
+      color: white;
+    }
+    #ui-container {
+      margin-bottom: 15px;
+      background: #c0c0c0; /* Gris estilo Windows 95 */
+      padding: 10px;
+      border: 2px solid white;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      display: inline-block;
+      color: black;
+    }
+    canvas {
+      border: 2px inset #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="ui-container">
+    <strong>PlantStudio Mini-Sim</strong><br><br>
+    <label for="edadSlider">Edad de la Planta (Iteraciones): </label>
+    <input type="range" id="edadSlider" min="1" max="5" value="1" step="1">
+    <span id="edadValor">1</span>
+  </div>
+
+  <div id="canvas-holder"></div>
+
+  <script>
+    // --- CONFIGURACIÓN DEL L-SYSTEM ---
+    // Axioma inicial (el "brote" de la planta)
+    const axioma = "X"; 
+    // Reglas de crecimiento biológico
+    // F = Avanzar dibujando tallo
+    // X = Punto de ramificación (no dibuja, pero muta en la siguiente generación)
+    // + = Girar a la derecha
+    // - = Girar a la izquierda
+    // [ = Guardar posición actual (crear una rama secundaria)
+    // ] = Volver a la posición guardada (terminar rama secundaria)
+    const reglas = {
+      "X": "F-[[X]+X]+F[+FX]-X",
+      "F": "FF"
+    };
+
+    let angulo = 25; // Ángulo de inclinación de las ramas
+    let longitudInicial = 140; // Longitud del tallo base
+    let cadenaActual = axioma;
+    let slider;
+
+    function setup() {
+      let canvas = createCanvas(500, 500);
+      canvas.parent('canvas-holder');
+      
+      // Conectar con el deslizador HTML
+      slider = select('#edadSlider');
+      slider.input(actualizarPlanta);
+      
+      // Generar la estructura de la planta para la edad inicial
+      calcularPlanta(slider.value());
+      noLoop(); // Solo redibujamos cuando cambia la edad
+    }
+
+    function draw() {
+      background(240); // Fondo del lienzo claro
+      
+      // Dibujar maceta/suelo base
+      stroke(120, 60, 30);
+      strokeWeight(4);
+      line(width/2 - 20, height - 10, width/2 + 20, height - 10);
+
+      // Mover el punto de origen al fondo/centro del lienzo
+      translate(width / 2, height - 10);
+      // Apuntar hacia arriba (0 grados en p5.js es a la derecha, restamos 90)
+      rotate(-HALF_PI); 
+      
+      // Color del tallo (verde botánico)
+      stroke(34, 139, 34); 
+      strokeWeight(2);
+
+      // Calcular cuánto debe encogerse el segmento según la edad para que quepa en pantalla
+      let factorEscala = pow(0.5, slider.value() - 1);
+      let len = longitudInicial * factorEscala;
+
+      // --- MOTOR DE RENDERIZADO (Graficos de Tortuga) ---
+      for (let i = 0; i < cadenaActual.length; i++) {
+        let caracter = cadenaActual.charAt(i);
+
+        if (caracter === "F") {
+          line(0, 0, len, 0);
+          translate(len, 0);
+        } else if (caracter === "+") {
+          rotate(radians(angulo));
+        } else if (caracter === "-") {
+          rotate(radians(-angulo));
+        } else if (caracter === "[") {
+          push(); // Guarda la matriz de transformación
+        } else if (caracter === "]") {
+          pop(); // Restaura la matriz de transformación
+          
+          // DIBUJAR UNA PEQUEÑA FLOR/HOJA AL FINAL DE CADA RAMA TERMINAL
+          push();
+          noStroke();
+          fill(255, 105, 180); // Rosa PlantStudio
+          ellipse(0, 0, 5, 5);
+          pop();
+        }
+      }
+    }
+
+    // Aplica las reglas del L-System según las iteraciones (edad) de la planta
+    function calcularPlanta(iteraciones) {
+      cadenaActual = axioma;
+      for (let i = 0; i < iteraciones; i++) {
+        let siguienteCadena = "";
+        for (let j = 0; j < cadenaActual.length; j++) {
+          let c = cadenaActual.charAt(j);
+          if (reglas[c] !== undefined) {
+            siguienteCadena += reglas[c];
+          } else {
+            siguienteCadena += c;
+          }
+        }
+        cadenaActual = siguienteCadena;
+      }
+    }
+
+    function actualizarPlanta() {
+      select('#edadValor').html(slider.value());
+      calcularPlanta(slider.value());
+      redraw(); // Forzar a p5.js a ejecutar draw() una vez
+    }
+  </script>
+</body>
+</html>
