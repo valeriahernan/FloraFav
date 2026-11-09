@@ -1,286 +1,208 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>FloraFav - Simulador Botánico</title>
-  
-  <!-- Cargamos la hoja de estilos de Windows 98 -->
-  <link rel="stylesheet" href="https://unpkg.com">
-  
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      background-color: #55aaaa; /* Fondo de escritorio clásico */
-      font-family: Arial, sans-serif;
-    }
-    
-    /* Ventana principal */
-    .window {
-      width: 780px;
-      margin: 0 auto;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FloraFav - Simulador Botánico</title>
 
-    /* Distribución en dos columnas para emular PlantStudio */
-    .app-layout {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+<link rel="stylesheet" href="https://unpkg.com/98.css@0.1.20/dist/98.css">
 
-    /* Columna de la izquierda: Librería de plantas */
-    .sidebar {
-      width: 220px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Caja de lista estilo Windows 98 */
-    ul.tree-view {
-      height: 100%;
-      min-height: 400px;
-      overflow-y: auto;
-      background: white;
-      margin: 0;
-      padding: 5px;
-    }
-
-    ul.tree-view li {
-      padding: 4px 6px;
-      cursor: pointer;
-      list-style-type: none;
-    }
-
-    /* Estilo para resaltar la planta seleccionada */
-    ul.tree-view li.selected {
-      background: #000080;
-      color: white;
-    }
-
-    /* Columna de la derecha: Visualizador y Controles */
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .slider-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Contenedor del lienzo con relieve */
-    #canvas-holder {
-      background: #7f7f7f;
-      padding: 4px;
-      display: inline-block;
-    }
-    
-    #canvas-holder canvas {
-      display: block;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#55aaaa;font-family:Arial,sans-serif}
+.window{width:780px;max-width:100%;margin:0 auto}
+.app-layout{display:flex;gap:12px;margin-bottom:10px}
+.sidebar{width:220px;flex-shrink:0;display:flex;flex-direction:column}
+.tree-view{height:100%;min-height:400px;overflow-y:auto;background:white;margin:0;padding:5px}
+.tree-view li{padding:4px 6px;cursor:pointer;list-style:none}
+.tree-view li.selected{background:#000080;color:white}
+.main-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.slider-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.slider-box input{flex:1;min-width:80px}
+#canvas-holder{background:#7f7f7f;padding:4px;width:100%;overflow:hidden}
+#canvas-holder canvas{display:block;max-width:100%;height:auto!important}
+.status-bar{display:flex;flex-wrap:wrap}
+@media(max-width:600px){
+body{padding:8px}
+.app-layout{flex-direction:column}
+.sidebar{width:100%}
+.tree-view{min-height:120px;max-height:160px}
+.main-content{width:100%}
+.status-bar{gap:3px}
+}
+</style>
 </head>
+
 <body>
+<div class="window">
+<div class="title-bar">
+<div class="title-bar-text">FloraFav - Library of Wildflowers (3 plants)</div>
+<div class="title-bar-controls">
+<button aria-label="Minimize"></button>
+<button aria-label="Maximize"></button>
+<button aria-label="Close"></button>
+</div>
+</div>
 
-  <div class="window">
-    <!-- Barra de título superior -->
-    <div class="title-bar">
-      <div class="title-bar-text">FloraFav - Library of Wildflowers (3 plants)</div>
-      <div class="title-bar-controls">
-        <button aria-label="Minimize"></button>
-        <button aria-label="Maximize"></button>
-        <button aria-label="Close"></button>
-      </div>
-    </div>
+<div class="window-body">
+<div class="app-layout">
 
-    <div class="window-body">
-      
-      <!-- Zona de trabajo dividida -->
-      <div class="app-layout">
-        
-        <!-- COLUMNA IZQUIERDA: MENÚ DE ESPECIES -->
-        <div class="sidebar">
-          <p style="margin: 0 0 5px 0; font-weight: bold;">Select Plant:</p>
-          <ul class="tree-view" id="listaPlantas">
-            <li class="selected" data-especie="fleabane">🌿 fleabane</li>
-            <li data-especie="clover">🍀 clover</li>
-            <li data-especie="violet">🌸 violet</li>
-          </ul>
-        </div>
+<div class="sidebar">
+<p style="margin:0 0 5px;font-weight:bold">Select Plant:</p>
+<ul class="tree-view" id="listaPlantas">
+<li class="selected" data-especie="fleabane">🌿 fleabane</li>
+<li data-especie="clover">🍀 clover</li>
+<li data-especie="violet">🌸 violet</li>
+</ul>
+</div>
 
-        <!-- COLUMNA DERECHA: PANTALLA Y SLIDERS -->
-        <div class="main-content">
-          <fieldset>
-            <legend>Morphology Parameters</legend>
-            <div class="slider-box">
-              <label for="edadSlider" style="width: 80px;">Age (Days):</label>
-              <input type="range" id="edadSlider" min="1" max="5" value="1" step="1">
-              <span id="edadValor" style="font-weight: bold; width: 15px;">1</span>
-            </div>
-          </fieldset>
+<div class="main-content">
+<fieldset>
+<legend>Morphology Parameters</legend>
+<div class="slider-box">
+<label for="edadSlider">Age (Days):</label>
+<input type="range" id="edadSlider" min="1" max="5" value="1" step="1">
+<span id="edadValor" style="font-weight:bold">1</span>
+</div>
+</fieldset>
 
-          <!-- Ventana hundida para el Canvas -->
-          <div class="sunken-panel" id="canvas-holder"></div>
-        </div>
+<div class="sunken-panel" id="canvas-holder"></div>
+</div>
 
-      </div>
-      
-      <!-- Barra de estado -->
-      <div class="status-bar">
-        <p class="status-bar-field" id="status-especie">Current: fleabane</p>
-        <p class="status-bar-field">Engine: L-System 2D</p>
-        <p class="status-bar-field" style="text-align: right;">FloraFav Project</p>
-      </div>
+</div>
 
-    </div>
-  </div>
+<div class="status-bar">
+<p class="status-bar-field" id="status-especie">Current: fleabane</p>
+<p class="status-bar-field">Engine: L-System 2D</p>
+<p class="status-bar-field">FloraFav Project</p>
+</div>
+</div>
+</div>
 
-  <!-- Cargamos p5.js -->
-  <script src="https://cloudflare.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 
-  <script>
-    // --- BASE DE DATOS GENÉTICA (L-SYSTEMS POR ESPECIE) ---
-    const especies = {
-      fleabane: {
-        axioma: "X",
-        reglas: { "X": "F-[[X]+X]+F[+FX]-X", "F": "FF" },
-        angulo: 25,
-        colorTallo:,     // Verde bosque
-        colorFlor:,     // Rosa
-        longitud: 140
-      },
-      clover: {
-        axioma: "F",
-        reglas: { "F": "F[+F]F[-F]F" },
-        angulo: 28,
-        colorTallo:,     // Verde mar oscuro
-        colorFlor:,    // Blanco/Crema
-        longitud: 60
-      },
-      violet: {
-        axioma: "X",
-        reglas: { "X": "F[-X]+X", "F": "FF" },
-        angulo: 35,
-        colorTallo:,    // Verde claro
-        colorFlor:,     // Violeta profundo
-        longitud: 130
-      }
-    };
+<script>
+const especies={
+fleabane:{
+axioma:"X",
+reglas:{"X":"F-[[X]+X]+F[+FX]-X","F":"FF"},
+angulo:25,
+colorTallo:[46,95,55],
+colorFlor:[232,139,169],
+longitud:140
+},
+clover:{
+axioma:"F",
+reglas:{"F":"F[+F]F[-F]F"},
+angulo:28,
+colorTallo:[35,110,75],
+colorFlor:[245,239,215],
+longitud:60
+},
+violet:{
+axioma:"X",
+reglas:{"X":"F[-X]+X","F":"FF"},
+angulo:35,
+colorTallo:[105,160,90],
+colorFlor:[105,55,170],
+longitud:130
+}
+};
 
-    // Planta activa por defecto
-    let plantaActiva = especies.fleabane;
-    let cadenaActual = "";
-    let slider;
+let plantaActiva;
+let cadenaActual="";
+let slider;
 
-    function setup() {
-      // Dimensiones para encajar de manera precisa en la columna derecha
-      let canvas = createCanvas(520, 400);
-      canvas.parent('canvas-holder');
-      
-      slider = select('#edadSlider');
-      slider.input(actualizarPlanta);
-      
-      // Configurar eventos click en el menú lateral de Windows 98
-      let items = selectAll('#listaPlantas li');
-      for (let i = 0; i < items.length; i++) {
-        items[i].mousePressed(alSeleccionarEspecie);
-      }
+function setup(){
+let canvas=createCanvas(520,400);
+canvas.parent("canvas-holder");
 
-      cambiarEspecie("fleabane");
-      noLoop();
-    }
+slider=select("#edadSlider");
+slider.input(actualizarPlanta);
 
-    function draw() {
-      background(255);
-      
-      // Dibujar base del suelo
-      stroke(120, 60, 30);
-      strokeWeight(4);
-      line(width/2 - 30, height - 12, width/2 + 30, height - 12);
+let items=selectAll("#listaPlantas li");
+items.forEach(item=>{
+item.mousePressed(()=>{
+items.forEach(el=>el.removeClass("selected"));
+item.addClass("selected");
+cambiarEspecie(item.attribute("data-especie"));
+});
+});
 
-      // Posicionar la tortuga botánica
-      translate(width / 2, height - 12);
-      rotate(-HALF_PI); 
-      
-      // Aplicar color de tallo de los genes activos
-      stroke(plantaActiva.colorTallo[0], plantaActiva.colorTallo[1], plantaActiva.colorTallo[2]); 
-      strokeWeight(2);
+cambiarEspecie("fleabane");
+noLoop();
+}
 
-      // Factor de escala dinámico según la edad de la iteración
-      let factorEscala = pow(plantaActiva.axioma === "F" ? 0.4 : 0.5, slider.value() - 1);
-      let len = plantaActiva.longitud * factorEscala;
+function draw(){
+background(255);
 
-      // Intérprete gráfico de la cadena L-System
-      for (let i = 0; i < cadenaActual.length; i++) {
-        let caracter = cadenaActual.charAt(i);
+stroke(120,60,30);
+strokeWeight(4);
+line(width/2-30,height-12,width/2+30,height-12);
 
-        if (caracter === "F") {
-          line(0, 0, len, 0);
-          translate(len, 0);
-        } else if (caracter === "+") {
-          rotate(radians(plantaActiva.angulo));
-        } else if (caracter === "-") {
-          rotate(radians(-plantaActiva.angulo));
-        } else if (caracter === "[") {
-          push();
-        } else if (caracter === "]") {
-          pop();
-          
-          // Dibujar flor con los genes de color activos
-          push();
-          noStroke();
-          fill(plantaActiva.colorFlor[0], plantaActiva.colorFlor[1], plantaActiva.colorFlor[2]);
-          ellipse(0, 0, 8, 8);
-          pop();
-        }
-      }
-    }
+push();
+translate(width/2,height-12);
+rotate(-HALF_PI);
 
-    // Gestionar el cambio de especie en base de datos e interfaz
-    function alSeleccionarEspecie() {
-      // Quitar clase seleccionada a los demás elementos de la lista
-      let items = selectAll('#listaPlantas li');
-      for (let i = 0; i < items.length; i++) {
-        items[i].removeClass('selected');
-      }
-      // Marcar el actual
-      this.addClass('selected');
-      
-      let nombreEspecie = this.attribute('data-especie');
-      cambiarEspecie(nombreEspecie);
-    }
+stroke(...plantaActiva.colorTallo);
+strokeWeight(2);
 
-    function cambiarEspecie(nombre) {
-      plantaActiva = especies[nombre];
-      select('#status-especie').html("Current: " + nombre);
-      calcularPlanta(slider.value());
-      redraw();
-    }
+let edad=Number(slider.value());
+let factorEscala=pow(plantaActiva.axioma==="F"?0.4:0.5,edad-1);
+let len=plantaActiva.longitud*factorEscala;
 
-    function calcularPlanta(iteraciones) {
-      cadenaActual = plantaActiva.axioma;
-      for (let i = 0; i < iteraciones; i++) {
-        let siguienteCadena = "";
-        for (let j = 0; j < cadenaActual.length; j++) {
-          let c = cadenaActual.charAt(j);
-          if (plantaActiva.reglas[c] !== undefined) {
-            siguienteCadena += plantaActiva.reglas[c];
-          } else {
-            siguienteCadena += c;
-          }
-        }
-        cadenaActual = siguienteCadena;
-      }
-    }
+for(let i=0;i<cadenaActual.length;i++){
+let c=cadenaActual.charAt(i);
 
-    function actualizarPlanta() {
-      select('#edadValor').html(slider.value());
-      calcularPlanta(slider.value());
-      redraw();
-    }
-  </script>
+if(c==="F"){
+line(0,0,len,0);
+translate(len,0);
+}else if(c==="+"){
+rotate(radians(plantaActiva.angulo));
+}else if(c==="-"){
+rotate(radians(-plantaActiva.angulo));
+}else if(c==="["){
+push();
+}else if(c==="]"){
+pop();
+push();
+noStroke();
+fill(...plantaActiva.colorFlor);
+ellipse(0,0,8,8);
+pop();
+}
+}
+pop();
+}
+
+function cambiarEspecie(nombre){
+plantaActiva=especies[nombre];
+select("#status-especie").html("Current: "+nombre);
+calcularPlanta(Number(slider.value()));
+redraw();
+}
+
+function calcularPlanta(iteraciones){
+cadenaActual=plantaActiva.axioma;
+
+for(let i=0;i<iteraciones-1;i++){
+let siguienteCadena="";
+
+for(let j=0;j<cadenaActual.length;j++){
+let c=cadenaActual.charAt(j);
+siguienteCadena+=plantaActiva.reglas[c]??c;
+}
+
+cadenaActual=siguienteCadena;
+}
+}
+
+function actualizarPlanta(){
+select("#edadValor").html(slider.value());
+calcularPlanta(Number(slider.value()));
+redraw();
+}
+</script>
 </body>
 </html>
