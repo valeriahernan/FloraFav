@@ -5,7 +5,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[+L]F[-L][+X][-X]B",
-      F:"FF"
+      F:"F"
     },
     angle:25,
     stem:[46,95,55],
@@ -23,7 +23,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[+L][-L]F[+X][-X]B",
-      F:"FF"
+      F:"F"
     },
     angle:28,
     stem:[35,110,75],
@@ -41,7 +41,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[-L][+L]F[+X]B",
-      F:"FF"
+      F:"F"
     },
     angle:35,
     stem:[105,160,90],
@@ -59,7 +59,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[+L]F[-L][+X]F[-X]B",
-      F:"FF"
+      F:"F"
     },
     angle:32,
     stem:[55,115,65],
@@ -77,7 +77,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[+L][-L]F[+X]F[-X]B",
-      F:"FF"
+      F:"F"
     },
     angle:27,
     stem:[55,105,75],
@@ -95,7 +95,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[+L]F[-L]F[+X][-X]B",
-      F:"FF"
+      F:"F"
     },
     angle:22,
     stem:[65,115,65],
@@ -113,7 +113,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[+B]F[+X]F[-L]",
-      F:"FF"
+      F:"F"
     },
     angle:18,
     stem:[65,115,75],
@@ -131,7 +131,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[+L]F[-L]F[+X]B",
-      F:"FF"
+      F:"F"
     },
     angle:24,
     stem:[45,105,65],
@@ -149,7 +149,7 @@ export const species={
     axiom:"X",
     rules:{
       X:"F[+L][-L]F[+X]F[-X]B",
-      F:"FF"
+      F:"F"
     },
     angle:38,
     stem:[45,105,65],
