@@ -1,32 +1,42 @@
 
 export function createPlantRenderer(holder){
-  let instance;
   let current={sentence:"",species:null,age:1};
 
-  instance=new p5(p=>{
-    let canvasWidth=520;
-    let canvasHeight=420;
-
+  const instance=new p5(p=>{
     p.setup=()=>{
-      const canvas=p.createCanvas(canvasWidth,canvasHeight);
+      const canvas=p.createCanvas(
+        Math.max(240,holder.clientWidth-8),420
+      );
       canvas.parent(holder);
       p.noLoop();
-      resize();
-      render();
     };
+
+    function flower(color){
+      p.push();
+      p.noStroke();
+      const size=11;
+      for(let i=0;i<6;i++){
+        p.push();
+        p.rotate(i*p.TWO_PI/6);
+        p.fill(...color);
+        p.ellipse(0,-size*.65,size*.65,size);
+        p.pop();
+      }
+      p.fill(255,205,65);
+      p.circle(0,0,5);
+      p.pop();
+    }
 
     p.draw=()=>{
       p.background(255);
       if(!current.species)return;
 
       const {species,age,sentence}=current;
-      const scale=Math.pow(.5,age-1);
-      const length=species.length*scale;
+      const length=species.length*Math.pow(.58,age-1);
 
       p.push();
       p.translate(p.width/2,p.height-20);
       p.rotate(-p.HALF_PI);
-
       p.stroke(...species.stem);
       p.strokeWeight(2);
       p.noFill();
@@ -35,42 +45,36 @@ export function createPlantRenderer(holder){
         if(char==="F"){
           p.line(0,0,length,0);
           p.translate(length,0);
-        }else if(char==="+"){
+        }
+        else if(char==="+"){
           p.rotate(p.radians(species.angle));
-        }else if(char==="-"){
+        }
+        else if(char==="-"){
           p.rotate(-p.radians(species.angle));
-        }else if(char==="["){
+        }
+        else if(char==="["){
           p.push();
-        }else if(char==="]"){
+        }
+        else if(char==="]"){
           p.pop();
-        }else if(char==="X"){
-          p.push();
-          p.noStroke();
-          p.fill(...species.flower);
-          p.ellipse(0,0,9,9);
-          p.pop();
+        }
+        else if(char==="X"||char==="B"){
+          flower(species.flower);
         }
       }
       p.pop();
     };
 
-    function resize(){
-      const width=Math.max(240,holder.clientWidth-8);
-      p.resizeCanvas(width,420);
-    }
-
-    function render(){
-      p.redraw();
-    }
-
     instance.update=(sentence,species,age)=>{
       current={sentence,species,age};
-      render();
+      p.redraw();
     };
 
     instance.resize=()=>{
-      resize();
-      render();
+      p.resizeCanvas(
+        Math.max(240,holder.clientWidth-8),420
+      );
+      p.redraw();
     };
   });
 

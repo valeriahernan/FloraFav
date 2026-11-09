@@ -38,7 +38,7 @@ function changeSpecies(name){
     flower:[...species[name].flower]
   };
 
-  slider.value=1;
+  slider.value=3;
   items.forEach(item=>{
     item.classList.toggle(
       "selected",
