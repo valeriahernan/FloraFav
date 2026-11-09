@@ -10,7 +10,12 @@ export const species={
     angle:25,
     stem:[46,95,55],
     flower:[232,139,169],
-    length:140
+    length:140,
+    leafType:"narrow",
+    leafSize:16,
+    flowerType:"daisy",
+    flowerSize:22,
+    petalCount:12
   },
   clover:{
     name:"clover",
@@ -21,7 +26,12 @@ export const species={
     angle:28,
     stem:[35,110,75],
     flower:[245,239,215],
-    length:65
+    length:65,
+    leafType:"clover",
+    leafSize:24,
+    flowerType:"clover",
+    flowerSize:17,
+    petalCount:3
   },
   violet:{
     name:"violet",
@@ -33,6 +43,11 @@ export const species={
     angle:35,
     stem:[105,160,90],
     flower:[105,55,170],
-    length:130
+    length:130,
+    leafType:"oval",
+    leafSize:22,
+    flowerType:"violet",
+    flowerSize:25,
+    petalCount:5
   }
 };
