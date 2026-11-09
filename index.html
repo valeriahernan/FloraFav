@@ -4,46 +4,78 @@
   <meta charset="UTF-8">
   <title>FloraFav - Simulador Botánico</title>
   
-  <!-- Cargamos la hoja de estilos auténtica de Windows 98 -->
+  <!-- Cargamos la hoja de estilos de Windows 98 -->
   <link rel="stylesheet" href="https://unpkg.com">
   
   <style>
     body {
       margin: 0;
       padding: 20px;
-      background-color: #55aaaa; /* Fondo verde azulado retro de Windows */
+      background-color: #55aaaa; /* Fondo de escritorio clásico */
       font-family: Arial, sans-serif;
     }
     
-    /* Contenedor principal estilo ventana de Windows 98 */
+    /* Ventana principal */
     .window {
-      width: 540px;
+      width: 780px;
       margin: 0 auto;
     }
 
-    .window-body {
+    /* Distribución en dos columnas para emular PlantStudio */
+    .app-layout {
       display: flex;
-      flex-direction: column;
-      gap: 15px;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
-    /* Área de herramientas / Controles */
-    .fieldset-container {
-      padding: 10px;
+    /* Columna de la izquierda: Librería de plantas */
+    .sidebar {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Caja de lista estilo Windows 98 */
+    ul.tree-view {
+      height: 100%;
+      min-height: 400px;
+      overflow-y: auto;
+      background: white;
+      margin: 0;
+      padding: 5px;
+    }
+
+    ul.tree-view li {
+      padding: 4px 6px;
+      cursor: pointer;
+      list-style-type: none;
+    }
+
+    /* Estilo para resaltar la planta seleccionada */
+    ul.tree-view li.selected {
+      background: #000080;
+      color: white;
+    }
+
+    /* Columna de la derecha: Visualizador y Controles */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .slider-box {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 5px;
     }
 
-    /* Ajuste para que el lienzo de dibujo se adapte a los bordes clásicos */
+    /* Contenedor del lienzo con relieve */
     #canvas-holder {
-      display: block;
       background: #7f7f7f;
       padding: 4px;
+      display: inline-block;
     }
     
     #canvas-holder canvas {
@@ -53,11 +85,10 @@
 </head>
 <body>
 
-  <!-- Ventana Estilo Windows 98 -->
   <div class="window">
-    <!-- Barra de título clásica -->
+    <!-- Barra de título superior -->
     <div class="title-bar">
-      <div class="title-bar-text">FloraFav - Library of Wildflowers</div>
+      <div class="title-bar-text">FloraFav - Library of Wildflowers (3 plants)</div>
       <div class="title-bar-controls">
         <button aria-label="Minimize"></button>
         <button aria-label="Maximize"></button>
@@ -66,75 +97,123 @@
     </div>
 
     <div class="window-body">
-      <!-- Panel de Opciones de PlantStudio -->
-      <fieldset class="fieldset-container">
-        <legend>Growth Parameters</legend>
-        <div class="slider-box">
-          <label for="edadSlider">Age (Days):</label>
-          <input type="range" id="edadSlider" min="1" max="5" value="1" step="1">
-          <span id="edadValor" style="font-weight: bold; width: 20px; text-align: center;">1</span>
-        </div>
-      </fieldset>
-
-      <!-- Espacio donde se renderiza la planta -->
-      <div class="sunken-panel" id="canvas-holder"></div>
       
-      <!-- Barra de estado inferior -->
-      <div class="status-bar">
-        <p class="status-bar-field">Status: Active</p>
-        <p class="status-bar-field">Engine: L-System 2D</p>
-        <p class="status-bar-field" style="text-align: right;">v1.0</p>
+      <!-- Zona de trabajo dividida -->
+      <div class="app-layout">
+        
+        <!-- COLUMNA IZQUIERDA: MENÚ DE ESPECIES -->
+        <div class="sidebar">
+          <p style="margin: 0 0 5px 0; font-weight: bold;">Select Plant:</p>
+          <ul class="tree-view" id="listaPlantas">
+            <li class="selected" data-especie="fleabane">🌿 fleabane</li>
+            <li data-especie="clover">🍀 clover</li>
+            <li data-especie="violet">🌸 violet</li>
+          </ul>
+        </div>
+
+        <!-- COLUMNA DERECHA: PANTALLA Y SLIDERS -->
+        <div class="main-content">
+          <fieldset>
+            <legend>Morphology Parameters</legend>
+            <div class="slider-box">
+              <label for="edadSlider" style="width: 80px;">Age (Days):</label>
+              <input type="range" id="edadSlider" min="1" max="5" value="1" step="1">
+              <span id="edadValor" style="font-weight: bold; width: 15px;">1</span>
+            </div>
+          </fieldset>
+
+          <!-- Ventana hundida para el Canvas -->
+          <div class="sunken-panel" id="canvas-holder"></div>
+        </div>
+
       </div>
+      
+      <!-- Barra de estado -->
+      <div class="status-bar">
+        <p class="status-bar-field" id="status-especie">Current: fleabane</p>
+        <p class="status-bar-field">Engine: L-System 2D</p>
+        <p class="status-bar-field" style="text-align: right;">FloraFav Project</p>
+      </div>
+
     </div>
   </div>
 
-  <!-- Cargamos p5.js al final para garantizar compatibilidad con GitHub Pages -->
+  <!-- Cargamos p5.js -->
   <script src="https://cloudflare.com"></script>
 
   <script>
-    // --- SIMULACIÓN BOTÁNICA PROCEDIMENTAL ---
-    const axioma = "X"; 
-    const reglas = {
-      "X": "F-[[X]+X]+F[+FX]-X",
-      "F": "FF"
+    // --- BASE DE DATOS GENÉTICA (L-SYSTEMS POR ESPECIE) ---
+    const especies = {
+      fleabane: {
+        axioma: "X",
+        reglas: { "X": "F-[[X]+X]+F[+FX]-X", "F": "FF" },
+        angulo: 25,
+        colorTallo:,     // Verde bosque
+        colorFlor:,     // Rosa
+        longitud: 140
+      },
+      clover: {
+        axioma: "F",
+        reglas: { "F": "F[+F]F[-F]F" },
+        angulo: 28,
+        colorTallo:,     // Verde mar oscuro
+        colorFlor:,    // Blanco/Crema
+        longitud: 60
+      },
+      violet: {
+        axioma: "X",
+        reglas: { "X": "F[-X]+X", "F": "FF" },
+        angulo: 35,
+        colorTallo:,    // Verde claro
+        colorFlor:,     // Violeta profundo
+        longitud: 130
+      }
     };
 
-    let angulo = 25; 
-    let longitudInicial = 140; 
-    let cadenaActual = axioma;
+    // Planta activa por defecto
+    let plantaActiva = especies.fleabane;
+    let cadenaActual = "";
     let slider;
 
     function setup() {
-      // Ajustamos el tamaño a 524px para que calce perfecto en la ventana gris
-      let canvas = createCanvas(524, 450);
+      // Dimensiones para encajar de manera precisa en la columna derecha
+      let canvas = createCanvas(520, 400);
       canvas.parent('canvas-holder');
       
       slider = select('#edadSlider');
       slider.input(actualizarPlanta);
       
-      calcularPlanta(slider.value());
-      noLoop(); 
-      redraw(); 
+      // Configurar eventos click en el menú lateral de Windows 98
+      let items = selectAll('#listaPlantas li');
+      for (let i = 0; i < items.length; i++) {
+        items[i].mousePressed(alSeleccionarEspecie);
+      }
+
+      cambiarEspecie("fleabane");
+      noLoop();
     }
 
     function draw() {
-      background(255); // Lienzo blanco de trabajo limpio
+      background(255);
       
-      // Dibujamos la maceta/suelo
+      // Dibujar base del suelo
       stroke(120, 60, 30);
       strokeWeight(4);
-      line(width/2 - 30, height - 15, width/2 + 30, height - 15);
+      line(width/2 - 30, height - 12, width/2 + 30, height - 12);
 
-      // Posicionamos el brote de la planta en la base central
-      translate(width / 2, height - 15);
+      // Posicionar la tortuga botánica
+      translate(width / 2, height - 12);
       rotate(-HALF_PI); 
       
-      stroke(34, 139, 34); // Color verde tallo
+      // Aplicar color de tallo de los genes activos
+      stroke(plantaActiva.colorTallo[0], plantaActiva.colorTallo[1], plantaActiva.colorTallo[2]); 
       strokeWeight(2);
 
-      let factorEscala = pow(0.5, slider.value() - 1);
-      let len = longitudInicial * factorEscala;
+      // Factor de escala dinámico según la edad de la iteración
+      let factorEscala = pow(plantaActiva.axioma === "F" ? 0.4 : 0.5, slider.value() - 1);
+      let len = plantaActiva.longitud * factorEscala;
 
+      // Intérprete gráfico de la cadena L-System
       for (let i = 0; i < cadenaActual.length; i++) {
         let caracter = cadenaActual.charAt(i);
 
@@ -142,32 +221,53 @@
           line(0, 0, len, 0);
           translate(len, 0);
         } else if (caracter === "+") {
-          rotate(radians(angulo));
+          rotate(radians(plantaActiva.angulo));
         } else if (caracter === "-") {
-          rotate(radians(-angulo));
+          rotate(radians(-plantaActiva.angulo));
         } else if (caracter === "[") {
-          push(); 
+          push();
         } else if (caracter === "]") {
-          pop(); 
+          pop();
           
-          // Flores terminales rosas típicas de PlantStudio
+          // Dibujar flor con los genes de color activos
           push();
           noStroke();
-          fill(255, 105, 180); 
-          ellipse(0, 0, 7, 7);
+          fill(plantaActiva.colorFlor[0], plantaActiva.colorFlor[1], plantaActiva.colorFlor[2]);
+          ellipse(0, 0, 8, 8);
           pop();
         }
       }
     }
 
+    // Gestionar el cambio de especie en base de datos e interfaz
+    function alSeleccionarEspecie() {
+      // Quitar clase seleccionada a los demás elementos de la lista
+      let items = selectAll('#listaPlantas li');
+      for (let i = 0; i < items.length; i++) {
+        items[i].removeClass('selected');
+      }
+      // Marcar el actual
+      this.addClass('selected');
+      
+      let nombreEspecie = this.attribute('data-especie');
+      cambiarEspecie(nombreEspecie);
+    }
+
+    function cambiarEspecie(nombre) {
+      plantaActiva = especies[nombre];
+      select('#status-especie').html("Current: " + nombre);
+      calcularPlanta(slider.value());
+      redraw();
+    }
+
     function calcularPlanta(iteraciones) {
-      cadenaActual = axioma;
+      cadenaActual = plantaActiva.axioma;
       for (let i = 0; i < iteraciones; i++) {
         let siguienteCadena = "";
         for (let j = 0; j < cadenaActual.length; j++) {
           let c = cadenaActual.charAt(j);
-          if (reglas[c] !== undefined) {
-            siguienteCadena += reglas[c];
+          if (plantaActiva.reglas[c] !== undefined) {
+            siguienteCadena += plantaActiva.reglas[c];
           } else {
             siguienteCadena += c;
           }
@@ -179,7 +279,7 @@
     function actualizarPlanta() {
       select('#edadValor').html(slider.value());
       calcularPlanta(slider.value());
-      redraw(); 
+      redraw();
     }
   </script>
 </body>
