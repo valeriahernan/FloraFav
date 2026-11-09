@@ -1,0 +1,24 @@
+
+body{color:#222}
+.flora-window{box-shadow:3px 3px 0 rgba(0,0,0,.2)}
+.title-bar{
+  background:linear-gradient(90deg,#000080,#1084d0);
+}
+.title-bar-text{
+  font-weight:bold;
+  letter-spacing:.2px;
+}
+.tree-view li:hover:not(.selected){background:#dce8f5}
+.genetics-panel button{width:100%}
+.canvas-panel{
+  border:2px inset #dfdfdf;
+  background:#fff;
+}
+.canvas-panel canvas{
+  display:block;
+}
+button:focus-visible,
+input:focus-visible{
+  outline:1px dotted #000;
+  outline-offset:2px;
+}

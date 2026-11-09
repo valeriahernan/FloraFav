@@ -1,0 +1,41 @@
+
+export const species={
+  fleabane:{
+    name:"fleabane",
+    axiom:"X",
+    rules:{
+      X:"F-[[X]+X]+F[+FX]-X",
+      F:"FF"
+    },
+    angle:25,
+    stem:[46,95,55],
+    flower:[232,139,169],
+    length:140,
+    iterations:5
+  },
+  clover:{
+    name:"clover",
+    axiom:"F",
+    rules:{
+      F:"F[+F]F[-F]F"
+    },
+    angle:28,
+    stem:[35,110,75],
+    flower:[245,239,215],
+    length:60,
+    iterations:5
+  },
+  violet:{
+    name:"violet",
+    axiom:"X",
+    rules:{
+      X:"F[-X]+X",
+      F:"FF"
+    },
+    angle:35,
+    stem:[105,160,90],
+    flower:[105,55,170],
+    length:130,
+    iterations:5
+  }
+};
