@@ -95,3 +95,11 @@ body{
   .status-bar{gap:3px}
   .status-bar-field{flex:1 1 100%}
 }
+
+body{
+  background-image:url("./photos/18.png");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+}
