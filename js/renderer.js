@@ -3,15 +3,85 @@ export function createPlantRenderer(holder){
   let current={sentence:"",species:null,age:1};
   let instance;
   let ready=false;
+
   let dragX=0;
   let dragY=0;
   let lastX=0;
   let lastY=0;
+  let zoom=1;
+  let lastPinch=0;
+  const pointers=new Map();
 
   instance=new p5(p=>{
     p.setup=()=>{
       const canvas=p.createCanvas(Math.max(240,holder.clientWidth-8),420);
       canvas.parent(holder);
+      const el=canvas.elt;
+      el.style.touchAction="none";
+
+      el.addEventListener("wheel",e=>{
+        e.preventDefault();
+        zoom=Math.max(.5,Math.min(3,zoom*(e.deltaY<0?1.1:.9)));
+        p.redraw();
+      },{passive:false});
+
+      el.addEventListener("pointerdown",e=>{
+        pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+        el.setPointerCapture(e.pointerId);
+
+        if(pointers.size===1){
+          lastX=e.clientX;
+          lastY=e.clientY;
+        }
+
+        if(pointers.size===2){
+          const pts=[...pointers.values()];
+          lastPinch=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+        }
+      });
+
+      el.addEventListener("pointermove",e=>{
+        if(!pointers.has(e.pointerId))return;
+
+        pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+
+        if(pointers.size===1){
+          dragX+=e.clientX-lastX;
+          dragY+=e.clientY-lastY;
+          lastX=e.clientX;
+          lastY=e.clientY;
+        }else if(pointers.size===2){
+          const pts=[...pointers.values()];
+          const distance=Math.hypot(
+            pts[0].x-pts[1].x,
+            pts[0].y-pts[1].y
+          );
+
+          if(lastPinch>0){
+            zoom=Math.max(.5,Math.min(3,zoom*distance/lastPinch));
+          }
+
+          lastPinch=distance;
+        }
+
+        p.redraw();
+      });
+
+      function removePointer(e){
+        pointers.delete(e.pointerId);
+        lastPinch=0;
+
+        if(pointers.size===1){
+          const remaining=[...pointers.values()][0];
+          lastX=remaining.x;
+          lastY=remaining.y;
+        }
+      }
+
+      el.addEventListener("pointerup",removePointer);
+      el.addEventListener("pointercancel",removePointer);
+      el.addEventListener("lostpointercapture",removePointer);
+
       p.noLoop();
       ready=true;
       p.redraw();
@@ -148,8 +218,13 @@ export function createPlantRenderer(holder){
 
         p.stroke(245,220,245);
         p.strokeWeight(1.5);
+
         for(let i=0;i<24;i++){
-          p.line(0,0,Math.cos(i*p.TWO_PI/24)*size*.5,Math.sin(i*p.TWO_PI/24)*size*.5);
+          p.line(
+            0,0,
+            Math.cos(i*p.TWO_PI/24)*size*.5,
+            Math.sin(i*p.TWO_PI/24)*size*.5
+          );
         }
 
         p.noStroke();
@@ -160,21 +235,6 @@ export function createPlantRenderer(holder){
       p.pop();
     }
 
-    p.mousePressed=()=>{
-  lastX=p.mouseX;
-  lastY=p.mouseY;
-  return false;
-};
-
-p.mouseDragged=()=>{
-  dragX+=p.mouseX-lastX;
-  dragY+=p.mouseY-lastY;
-  lastX=p.mouseX;
-  lastY=p.mouseY;
-  p.redraw();
-  return false;
-};
-
     p.draw=()=>{
       p.clear();
       if(!current.species)return;
@@ -183,13 +243,12 @@ p.mouseDragged=()=>{
       const length=species.length*Math.pow(.58,age-1);
 
       p.push();
-      p.translate(
-      p.width/2+dragX,
-      p.height-20+dragY
-      );
+      p.translate(p.width/2+dragX,p.height-20+dragY);
+      p.scale(zoom);
       p.rotate(-p.HALF_PI);
+
       p.stroke(...species.stem);
-      p.strokeWeight(2);
+      p.strokeWeight(2/zoom);
       p.noFill();
 
       for(const char of sentence){

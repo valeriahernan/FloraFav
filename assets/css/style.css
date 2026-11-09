@@ -1,29 +1,47 @@
 
 *{box-sizing:border-box}
+
 :root{
   --desktop:#55aaaa;
   --canvas:#fff;
   --text:#222;
   --accent:#000080;
 }
+
+html{
+  min-height:100%;
+}
+
 body{
   margin:0;
   min-height:100vh;
   padding:24px;
-  background:var(--desktop);
+  background-color:var(--desktop);
+  background-image:url("./photos/18.png");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
   font-family:Arial,sans-serif;
+  color:var(--text);
 }
+
 .flora-window{
   width:850px;
   max-width:100%;
   margin:0 auto;
 }
-.window-body{padding:12px}
+
+.window-body{
+  padding:12px;
+}
+
 .app-layout{
   display:flex;
   gap:14px;
   min-height:430px;
 }
+
 .sidebar{
   width:210px;
   flex-shrink:0;
@@ -31,10 +49,12 @@ body{
   flex-direction:column;
   gap:10px;
 }
+
 .panel-label{
   margin:0;
   font-weight:bold;
 }
+
 .tree-view{
   flex:1;
   min-height:250px;
@@ -43,20 +63,34 @@ body{
   margin:0;
   padding:5px;
 }
+
 .tree-view li{
   padding:6px;
   list-style:none;
   cursor:pointer;
+  user-select:none;
 }
+
+.tree-view li:hover{
+  background:#dce8f5;
+  color:#000;
+}
+
 .tree-view li.selected{
   background:var(--accent);
   color:white;
 }
+
 .genetics-panel{
   display:flex;
   flex-direction:column;
   gap:7px;
 }
+
+.genetics-panel button{
+  cursor:pointer;
+}
+
 .main-content{
   flex:1;
   min-width:0;
@@ -64,57 +98,100 @@ body{
   flex-direction:column;
   gap:12px;
 }
+
 .slider-box{
   display:flex;
   align-items:center;
   gap:12px;
   flex-wrap:wrap;
 }
-.slider-box input{flex:1;min-width:80px}
+
+.slider-box input{
+  flex:1;
+  min-width:80px;
+}
+
 .canvas-panel{
   width:100%;
   min-height:300px;
   background:var(--canvas);
   overflow:hidden;
 }
-.canvas-panel canvas{
+
+#canvas-holder{
+  width:100%;
+  min-height:300px;
+  overflow:hidden;
+  cursor:grab;
+  touch-action:none;
+}
+
+#canvas-holder canvas{
   display:block;
   max-width:100%;
+  touch-action:none;
+  cursor:grab;
 }
+
+#canvas-holder canvas:active{
+  cursor:grabbing;
+}
+
 .status-bar{
   display:flex;
   flex-wrap:wrap;
   margin-top:12px;
 }
+
 @media(max-width:600px){
-  body{padding:8px}
-  .app-layout{flex-direction:column}
-  .sidebar{width:100%}
-  .tree-view{min-height:100px;max-height:140px}
-  .canvas-panel{min-height:260px}
-  .status-bar{gap:3px}
-  .status-bar-field{flex:1 1 100%}
-}
+  body{
+    padding:8px;
+    background-attachment:scroll;
+  }
 
-body{
-  background-image:url("./photos/18.png");
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-  background-attachment:fixed;
-}
+  .flora-window{
+    width:100%;
+  }
 
-#canvas-holder{
-  overflow:hidden;
-  cursor:grab;
-}
+  .window-body{
+    padding:8px;
+  }
 
-#canvas-holder canvas{
-  display:block;
-  cursor:grab;
-  touch-action:none;
-}
+  .app-layout{
+    flex-direction:column;
+    min-height:0;
+  }
 
-#canvas-holder canvas:active{
-  cursor:grabbing;
+  .sidebar{
+    width:100%;
+  }
+
+  .tree-view{
+    min-height:100px;
+    max-height:140px;
+  }
+
+  .main-content{
+    width:100%;
+  }
+
+  .canvas-panel{
+    min-height:260px;
+  }
+
+  #canvas-holder{
+    min-height:260px;
+  }
+
+  #canvas-holder canvas{
+    max-width:100%;
+  }
+
+  .status-bar{
+    gap:3px;
+  }
+
+  .status-bar-field{
+    flex:1 1 100%;
+  }
 }
