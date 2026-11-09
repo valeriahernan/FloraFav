@@ -3,6 +3,10 @@ export function createPlantRenderer(holder){
   let current={sentence:"",species:null,age:1};
   let instance;
   let ready=false;
+  let dragX=0;
+  let dragY=0;
+  let lastX=0;
+  let lastY=0;
 
   instance=new p5(p=>{
     p.setup=()=>{
@@ -156,6 +160,21 @@ export function createPlantRenderer(holder){
       p.pop();
     }
 
+    p.mousePressed=()=>{
+  lastX=p.mouseX;
+  lastY=p.mouseY;
+  return false;
+};
+
+p.mouseDragged=()=>{
+  dragX+=p.mouseX-lastX;
+  dragY+=p.mouseY-lastY;
+  lastX=p.mouseX;
+  lastY=p.mouseY;
+  p.redraw();
+  return false;
+};
+
     p.draw=()=>{
       p.clear();
       if(!current.species)return;
@@ -164,7 +183,10 @@ export function createPlantRenderer(holder){
       const length=species.length*Math.pow(.58,age-1);
 
       p.push();
-      p.translate(p.width/2,p.height-20);
+      p.translate(
+      p.width/2+dragX,
+      p.height-20+dragY
+      );
       p.rotate(-p.HALF_PI);
       p.stroke(...species.stem);
       p.strokeWeight(2);

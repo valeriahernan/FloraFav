@@ -103,3 +103,18 @@ body{
   background-repeat:no-repeat;
   background-attachment:fixed;
 }
+
+#canvas-holder{
+  overflow:hidden;
+  cursor:grab;
+}
+
+#canvas-holder canvas{
+  display:block;
+  cursor:grab;
+  touch-action:none;
+}
+
+#canvas-holder canvas:active{
+  cursor:grabbing;
+}

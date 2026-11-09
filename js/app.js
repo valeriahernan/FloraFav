@@ -21,7 +21,10 @@ function updatePlant(){
   try{
     const sentence=generateLSystem(activeSpecies,age);
     renderer.update(sentence,activeSpecies,age);
-    status.textContent="Current: "+activeName;
+    status.textContent="Current: "+activeSpecies.name+
+  (activeSpecies.mutationLevel
+    ?" | Mutation: "+activeSpecies.mutationLevel
+    :" | Original specimen");
   }catch(error){
     status.textContent="Growth limit reached";
     console.error(error);
