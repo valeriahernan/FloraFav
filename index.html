@@ -2,15 +2,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FloraFav - Simulador Botánico</title>
-<link rel="stylesheet" href="https://unpkg.com/98.css@0.1.20/dist/98.css">
-<link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="assets/css/windows98.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FloraFav - Simulador Botánico</title>
+  <link rel="stylesheet" href="https://unpkg.com/98.css@0.1.20/dist/98.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/windows98.css">
 </head>
 <body>
+
 <main class="window flora-window">
+
   <div class="title-bar">
     <div class="title-bar-text">FloraFav - Biblioteca de Flores Silvestres</div>
     <div class="title-bar-controls">
@@ -19,23 +21,19 @@
       <button aria-label="Close"></button>
     </div>
   </div>
+
   <div class="window-body">
+
     <div class="app-layout">
+
       <aside class="sidebar">
+
         <p class="panel-label">Selecciona Planta:</p>
+
         <ul class="tree-view" id="listaPlantas">
-          <div class="genetics-panel">
-  <label for="hybridParentA">Progenitor A</label>
-  <select id="hybridParentA"></select>
-
-  <label for="hybridParentB">Progenitor B</label>
-  <select id="hybridParentB"></select>
-
-  <button id="fusionarPlantas">🧬 Fusionar plantas</button>
-</div>
-          <li class="selected" data-especie="fleabane">Erigerón</li>
-          <li data-especie="clover">Trébol</li>
-          <li data-especie="violet">Violeta</li>
+          <li class="selected" data-especie="fleabane">🌿 Erigerón</li>
+          <li data-especie="clover">🍀 Trébol</li>
+          <li data-especie="violet">🌸 Violeta</li>
           <li data-especie="cosmos">Cosmos</li>
           <li data-especie="aciano">Aciano</li>
           <li data-especie="amapola">Amapola</li>
@@ -43,32 +41,66 @@
           <li data-especie="lupino">Lupino</li>
           <li data-especie="pasionaria">Pasionaria</li>
         </ul>
+
         <fieldset class="genetics-panel">
-          <legend>Genetics Lab</legend>
-          <button id="mutarPlanta">Mutación Random</button>
-          <button id="reiniciarPlanta">Resetear Planta</button>
+          <legend>Laboratorio genético</legend>
+
+          <label for="hybridParentA">Progenitor A:</label>
+          <select id="hybridParentA"></select>
+
+          <label for="hybridParentB">Progenitor B:</label>
+          <select id="hybridParentB"></select>
+
+          <button id="fusionarPlantas" type="button">
+            🧬 Fusionar plantas
+          </button>
         </fieldset>
+
+        <fieldset class="genetics-panel">
+          <legend>Mutaciones</legend>
+          <button id="mutarPlanta" type="button">Mutación Random</button>
+          <button id="reiniciarPlanta" type="button">Resetear Planta</button>
+        </fieldset>
+
       </aside>
+
       <section class="main-content">
+
         <fieldset>
-          <legend>Parámetros Morfológicos</legend>
+          <legend>Parámetros morfológicos</legend>
+
           <div class="slider-box">
-            <label for="edadSlider"> Edad (Dias):</label>
-            <input type="range" id="edadSlider" min="1" max="100" value="1" step="1">
+            <label for="edadSlider">Edad (días):</label>
+            <input
+              type="range"
+              id="edadSlider"
+              min="1"
+              max="100"
+              value="3"
+              step="1"
+            >
             <strong id="edadValor">3</strong>
           </div>
         </fieldset>
+
         <div class="canvas-panel sunken-panel" id="canvas-holder"></div>
+
       </section>
+
     </div>
+
     <div class="status-bar">
-      <p class="status-bar-field" id="status-especie">Current: fleabane</p>
+      <p class="status-bar-field" id="status-especie">Current: Fleabane</p>
       <p class="status-bar-field">Engine: L-System 2D</p>
       <p class="status-bar-field">FloraFav Project</p>
     </div>
+
   </div>
+
 </main>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
 <script type="module" src="./js/app.js"></script>
+
 </body>
 </html>
