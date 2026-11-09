@@ -14,7 +14,10 @@ export function createPlantRenderer(holder){
 
   instance=new p5(p=>{
     p.setup=()=>{
-      const canvas=p.createCanvas(Math.max(240,holder.clientWidth-8),420);
+      const canvas=p.createCanvas(
+  Math.max(1,holder.clientWidth),
+  holder.clientHeight||280
+);
       canvas.parent(holder);
       const el=canvas.elt;
       el.style.touchAction="none";
@@ -240,7 +243,7 @@ export function createPlantRenderer(holder){
       if(!current.species)return;
 
       const {species,age,sentence}=current;
-      const length=species.length*Math.pow(.58,age-1);
+      const length=species.length*.38;
 
       p.push();
       p.translate(p.width/2+dragX,p.height-20+dragY);
@@ -280,14 +283,18 @@ export function createPlantRenderer(holder){
   });
 
   return {
-    update(sentence,species,age){
-      current={sentence,species,age};
-      if(ready)instance.redraw();
-    },
-    resize(){
-      if(!ready)return;
-      instance.resizeCanvas(Math.max(240,holder.clientWidth-8),420);
-      instance.redraw();
-    }
-  };
+  update(sentence,species,age){
+    current={sentence,species,age};
+    if(ready)instance.redraw();
+  },
+  resize(){
+    if(!ready)return;
+    instance.resizeCanvas(
+      Math.max(1,holder.clientWidth),
+      holder.clientHeight||280
+    );
+    instance.redraw();
+  }
+};
+
 }
