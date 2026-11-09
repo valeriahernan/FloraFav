@@ -1,41 +1,119 @@
 
-export function mutateSpecies(species){
-  const mutation={
-    ...species,
-    stem:[...species.stem],
-    flower:[...species.flower]
+import {species} from "./species.js";
+import {generateLSystem} from "./engine.js";
+import {mutateSpecies,hybridizeSpecies} from "./genetics.js";
+import {createPlantRenderer} from "./renderer.js";
+
+const holder=document.getElementById("canvas-holder");
+const slider=document.getElementById("edadSlider");
+const ageValue=document.getElementById("edadValor");
+const status=document.getElementById("status-especie");
+const items=document.querySelectorAll("#listaPlantas li");
+
+const parentA=document.getElementById("hybridParentA");
+const parentB=document.getElementById("hybridParentB");
+const fusionButton=document.getElementById("fusionarPlantas");
+
+let activeName="fleabane";
+let activeSpecies={...species.fleabane};
+let originalSpecies={...species.fleabane};
+let renderer;
+
+function cloneSpecies(source){
+  return {
+    ...source,
+    rules:{...source.rules},
+    stem:[...source.stem],
+    flower:[...source.flower]
   };
-
-  const random=(min,max)=>Math.random()*(max-min)+min;
-  const choice=Math.floor(Math.random()*7);
-
-  switch(choice){
-    case 0:
-      mutation.angle=Math.max(10,Math.min(60,species.angle+random(-8,8)));
-      break;
-    case 1:
-      mutation.length=Math.max(20,species.length*random(.8,1.2));
-      break;
-    case 2:
-      mutation.leafSize=Math.max(8,species.leafSize*random(.75,1.3));
-      break;
-    case 3:
-      mutation.flowerSize=Math.max(10,species.flowerSize*random(.75,1.3));
-      break;
-    case 4:
-      mutation.petalCount=Math.max(3,Math.min(16,species.petalCount+Math.round(random(-2,2))));
-      break;
-    case 5:{
-      const channel=Math.floor(Math.random()*3);
-      mutation.flower[channel]=Math.floor(random(40,256));
-      break;
-    }
-    case 6:{
-      const channel=Math.floor(Math.random()*3);
-      mutation.stem[channel]=Math.floor(random(30,180));
-      break;
-    }
-  }
-
-  return mutation;
 }
+
+// Cargar especies en los selectores
+Object.entries(species).forEach(([id,plant])=>{
+  const optionA=new Option(plant.name,id);
+  const optionB=new Option(plant.name,id);
+  parentA.add(optionA);
+  parentB.add(optionB);
+});
+
+parentA.value="fleabane";
+parentB.value="clover";
+
+function updatePlant(){
+  const age=Number(slider.value);
+  ageValue.textContent=age;
+
+  try{
+    const sentence=generateLSystem(activeSpecies,age);
+    renderer.update(sentence,activeSpecies,age);
+
+    status.textContent=activeSpecies.name+
+      (activeSpecies.hybrid?" | Híbrido":"");
+  }catch(error){
+    status.textContent="Growth limit reached";
+    console.error(error);
+  }
+}
+
+function changeSpecies(name){
+  if(!species[name])return;
+
+  activeName=name;
+  activeSpecies=cloneSpecies(species[name]);
+  originalSpecies=cloneSpecies(activeSpecies);
+
+  slider.value=3;
+
+  items.forEach(item=>{
+    item.classList.toggle(
+      "selected",
+      item.dataset.especie===name
+    );
+  });
+
+  updatePlant();
+}
+
+items.forEach(item=>{
+  item.addEventListener("click",()=>{
+    changeSpecies(item.dataset.especie);
+  });
+});
+
+slider.addEventListener("input",updatePlant);
+
+document.getElementById("mutarPlanta").addEventListener("click",()=>{
+  activeSpecies=mutateSpecies(activeSpecies);
+  updatePlant();
+});
+
+document.getElementById("reiniciarPlanta").addEventListener("click",()=>{
+  activeSpecies=cloneSpecies(originalSpecies);
+  updatePlant();
+});
+
+fusionButton.addEventListener("click",()=>{
+  const first=species[parentA.value];
+  const second=species[parentB.value];
+
+  if(!first||!second)return;
+
+  activeSpecies=hybridizeSpecies(first,second);
+  originalSpecies=cloneSpecies(activeSpecies);
+  activeName=activeSpecies.name;
+
+  items.forEach(item=>item.classList.remove("selected"));
+
+  slider.value=3;
+  updatePlant();
+});
+
+renderer=createPlantRenderer(holder);
+
+const observer=new ResizeObserver(()=>{
+  renderer.resize();
+});
+
+observer.observe(holder);
+
+changeSpecies(activeName);

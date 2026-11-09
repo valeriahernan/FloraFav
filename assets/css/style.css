@@ -195,3 +195,13 @@ body{
     flex:1 1 100%;
   }
 }
+
+.genetics-panel select{
+  width:100%;
+  max-width:100%;
+}
+
+#fusionarPlantas{
+  margin-top:5px;
+  cursor:pointer;
+}
