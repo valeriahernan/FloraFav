@@ -14,7 +14,6 @@ export function createPlantRenderer(holder){
 
   instance=new p5(p=>{
 
-    // CONFIGURACIÓN DEL CANVAS
     p.setup=()=>{
       const canvas=p.createCanvas(
         Math.max(1,holder.clientWidth),
@@ -26,14 +25,12 @@ export function createPlantRenderer(holder){
       const el=canvas.elt;
       el.style.touchAction="none";
 
-      // ZOOM CON RUEDA
       el.addEventListener("wheel",e=>{
         e.preventDefault();
         zoom=Math.max(.5,Math.min(3,zoom*(e.deltaY<0?1.1:.9)));
         p.redraw();
       },{passive:false});
 
-      // ARRASTRE Y ZOOM TÁCTIL
       el.addEventListener("pointerdown",e=>{
         pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
         el.setPointerCapture(e.pointerId);
@@ -99,7 +96,6 @@ export function createPlantRenderer(holder){
       p.redraw();
     };
 
-    // DIBUJAR HOJAS
     function drawLeaf(type,size){
       const color=current.species.stem;
 
@@ -141,7 +137,6 @@ export function createPlantRenderer(holder){
       p.pop();
     }
 
-    // DIBUJAR FLORES
     function drawFlower(type,color,size,count){
       p.push();
       p.noStroke();
@@ -262,7 +257,6 @@ export function createPlantRenderer(holder){
       p.pop();
     }
 
-    // DIBUJAR LA PLANTA
     p.draw=()=>{
       p.clear();
 
@@ -316,10 +310,8 @@ export function createPlantRenderer(holder){
 
       p.pop();
     };
-
   });
 
-  // ACTUALIZAR Y REDIMENSIONAR
   return {
     update(sentence,species,age){
       current={sentence,species,age};

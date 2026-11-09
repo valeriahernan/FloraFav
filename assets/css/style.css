@@ -1,219 +1,530 @@
-
-*{box-sizing:border-box}
-
-:root{
-  --desktop:#55aaaa;
-  --canvas:#fff;
-  --text:#222;
-  --accent:#000080;
+:root {
+  --flora-bg: #55aaaa;
+  --flora-panel: #f0f0f0;
+  --flora-white: #ffffff;
+  --flora-green: #dcebdc;
+  --flora-green-dark: #537b60;
+  --flora-text: #252525;
+  --flora-muted: #777;
+  --flora-border: #c6c6c6;
+  --flora-blue: #000080;
 }
 
-html{
-  min-height:100%;
+* {
+  box-sizing: border-box;
 }
 
-body{
-  margin:0;
-  min-height:100vh;
-  padding:16px;
-  background-color:var(--desktop);
-  background-image:url("./photos/18.png");
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-  background-attachment:fixed;
-  font-family:Arial,sans-serif;
-  color:var(--text);
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 32px 16px;
+  color: var(--flora-text);
+  background-color: var(--flora-bg);
+  background-image: url("./photos/18.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: Arial, sans-serif;
 }
 
-.flora-window{
-  width:760px;
-  max-width:100%;
-  margin:0 auto;
+.flora-window {
+  width: min(100%, 1040px);
+  margin: 0 auto;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.18);
 }
 
-.window-body{
-  padding:10px;
+.flora-window > .window-body {
+  padding: 16px;
 }
 
-.app-layout{
-  display:flex;
-  align-items:stretch;
-  gap:12px;
-  min-height:360px;
+/* HEADER */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 4px 2px 18px;
+  border-bottom: 1px solid var(--flora-border);
+  margin-bottom: 18px;
 }
 
-.sidebar{
-  width:195px;
-  flex-shrink:0;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
 }
 
-.panel-label{
-  margin:0;
-  font-weight:bold;
+.brand-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  background: var(--flora-green);
+  color: var(--flora-green-dark);
+  font-size: 23px;
 }
 
-.tree-view{
-  flex:1;
-  min-height:190px;
-  max-height:250px;
-  overflow-y:auto;
-  background:white;
-  margin:0;
-  padding:5px;
+.app-brand h1 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
 }
 
-.tree-view li{
-  padding:5px;
-  list-style:none;
-  cursor:pointer;
-  user-select:none;
+.app-brand p {
+  margin: 3px 0 0;
+  color: var(--flora-muted);
+  font-size: 11px;
 }
 
-.tree-view li:hover{
-  background:#dce8f5;
-  color:#000;
+/* NAVEGACIÓN */
+
+.view-switcher {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  background: #e5e5e5;
+  border: 1px solid #c5c5c5;
 }
 
-.tree-view li.selected{
-  background:var(--accent);
-  color:white;
+.view-tab {
+  min-height: 30px;
+  padding: 5px 13px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
 }
 
-.genetics-panel{
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-  min-width:0;
-  margin:0;
-  padding:8px;
+.view-tab:hover {
+  background: #f5f5f5;
 }
 
-.genetics-panel label{
-  margin:0;
+.view-tab.active {
+  background: #fff;
+  border-color: #bcbcbc;
+  color: #222;
 }
 
-.genetics-panel select{
-  display:block;
-  width:100%;
-  max-width:100%;
-  min-width:0;
-  height:24px;
+#garden-count {
+  display: inline-block;
+  min-width: 17px;
+  margin-left: 5px;
+  padding: 2px 4px;
+  background: #dcebdc;
+  color: #42634a;
+  font-size: 10px;
+  text-align: center;
 }
 
-.genetics-panel button{
-  width:100%;
-  max-width:100%;
-  min-height:24px;
-  cursor:pointer;
+/* VISTAS */
+
+.app-view {
+  display: none;
 }
 
-#fusionarPlantas{
-  margin-top:3px;
+.app-view.active {
+  display: block;
 }
 
-.main-content{
-  flex:1;
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.app-view[hidden] {
+  display: none !important;
 }
 
-.slider-box{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
+/* ESTRUCTURA DEL LABORATORIO */
+
+.app-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 18px;
 }
 
-.slider-box input{
-  flex:1;
-  min-width:80px;
+.sidebar,
+.main-content {
+  min-width: 0;
 }
 
-.canvas-panel{
-  width:100%;
-  min-height:280px;
-  background:var(--canvas);
-  overflow:hidden;
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
-#canvas-holder{
-  width:100%;
-  height:280px;
-  min-height:280px;
-  overflow:hidden;
-  cursor:grab;
-  touch-action:none;
+.section-indicator {
+  width: 7px;
+  height: 7px;
+  background: #6f9b78;
+  border: 1px solid #52765a;
 }
 
-#canvas-holder canvas{
-  display:block;
-  max-width:100%;
-  touch-action:none;
-  cursor:grab;
+.panel-label {
+  margin: 0 0 8px;
+  color: var(--flora-muted);
+  font-size: 11px;
 }
 
-#canvas-holder canvas:active{
-  cursor:grabbing;
+/* BIBLIOTECA */
+
+.tree-view {
+  min-height: 190px;
+  margin: 0 0 16px;
+  padding: 7px;
+  background: #fff;
+  font-size: 12px;
 }
 
-.status-bar{
-  display:flex;
-  flex-wrap:wrap;
-  margin-top:10px;
+.tree-view li {
+  padding: 6px 7px;
+  cursor: pointer;
 }
 
-@media(max-width:650px){
-  body{
-    padding:8px;
-    background-attachment:scroll;
+.tree-view li.selected {
+  background: var(--flora-blue);
+  color: #fff;
+}
+
+/* PANELES */
+
+.genetics-panel,
+.parameters-panel {
+  margin: 0 0 14px;
+  padding: 12px;
+}
+
+.genetics-panel legend,
+.parameters-panel legend {
+  padding: 0 5px;
+  font-size: 11px;
+}
+
+.genetics-panel label {
+  display: block;
+  margin: 7px 0 4px;
+  font-size: 11px;
+}
+
+.genetics-panel select {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 5px;
+}
+
+.genetics-panel button {
+  width: 100%;
+  margin-top: 7px;
+  font-size: 11px;
+}
+
+/* PARÁMETROS */
+
+.slider-box {
+  display: grid;
+  grid-template-columns: auto minmax(70px, 1fr) 30px;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider-box label {
+  font-size: 11px;
+}
+
+.slider-box input {
+  width: 100%;
+  min-width: 0;
+}
+
+.slider-box strong {
+  font-size: 12px;
+  text-align: center;
+}
+
+/* CANVAS */
+
+.canvas-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.canvas-panel canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* ACCIONES */
+
+.plant-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.workspace-caption {
+  color: var(--flora-muted);
+  font-size: 10px;
+}
+
+#savePlant {
+  white-space: nowrap;
+}
+
+/* JARDÍN */
+
+.garden-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.garden-header .section-heading {
+  margin-bottom: 10px;
+}
+
+.garden-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.7px;
+}
+
+.garden-header p {
+  margin: 5px 0 0;
+  color: var(--flora-muted);
+  font-size: 12px;
+}
+
+.garden-total {
+  padding: 6px 9px;
+  background: var(--flora-green);
+  color: var(--flora-green-dark);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.garden-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 30px 20px;
+  background: #f6f8f4;
+  border: 1px dashed #b8c9b9;
+  text-align: center;
+}
+
+.empty-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  background: #e1ecdf;
+  color: var(--flora-green-dark);
+  font-size: 26px;
+}
+
+.garden-empty h3 {
+  margin: 0 0 7px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.garden-empty p {
+  max-width: 290px;
+  margin: 0 0 16px;
+  color: var(--flora-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.garden-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+/* TARJETAS DEL JARDÍN */
+
+.garden-card {
+  min-width: 0;
+  padding: 8px;
+  background: #f5f7f2;
+  border: 1px solid #cbd5c8;
+}
+
+.garden-card-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #fff;
+}
+
+.garden-card-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.garden-card h3 {
+  margin: 10px 2px 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.garden-card p {
+  margin: 0 2px 10px;
+  color: var(--flora-muted);
+  font-size: 10px;
+}
+
+.garden-card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.garden-card-actions button {
+  flex: 1;
+  min-width: 0;
+  font-size: 10px;
+}
+
+/* ESTADO */
+
+.status-bar {
+  margin-top: 18px;
+}
+
+.status-bar-field {
+  font-size: 10px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 720px) {
+  body {
+    padding: 12px 8px;
+    background-attachment: scroll;
   }
 
-  .flora-window{
-    width:100%;
+  .flora-window {
+    width: 100%;
   }
 
-  .window-body{
-    padding:8px;
+  .flora-window > .window-body {
+    padding: 11px;
   }
 
-  .app-layout{
-    flex-direction:column;
-    min-height:0;
+  .app-layout {
+    grid-template-columns: 1fr;
   }
 
-  .sidebar{
-    width:100%;
+  .sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 
-  .tree-view{
-    min-height:100px;
-    max-height:150px;
+  .sidebar > .section-heading,
+  .sidebar > .panel-label,
+  .sidebar > .tree-view {
+    grid-column: 1 / -1;
   }
 
-  .main-content{
-    width:100%;
+  .tree-view {
+    min-height: 0;
+    margin-bottom: 5px;
   }
 
-  .canvas-panel{
-    min-height:240px;
+  .genetics-panel {
+    min-width: 0;
+    margin-bottom: 5px;
   }
 
-  #canvas-holder{
-    height:240px;
-    min-height:240px;
+  .canvas-panel {
+    min-height: 340px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 13px;
   }
 
-  .status-bar{
-    gap:3px;
+  .view-switcher {
+    width: 100%;
   }
 
-  .status-bar-field{
-    flex:1 1 100%;
+  .view-tab {
+    flex: 1;
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .canvas-panel {
+    min-height: 280px;
+  }
+
+  .slider-box {
+    grid-template-columns: 1fr 30px;
+  }
+
+  .slider-box label {
+    grid-column: 1 / -1;
+  }
+
+  .plant-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  #savePlant {
+    width: 100%;
+  }
+
+  .garden-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .garden-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .garden-card {
+    padding: 6px;
+  }
+
+  .garden-card-actions {
+    flex-direction: column;
+  }
+
+  .status-bar {
+    flex-wrap: wrap;
   }
 }
