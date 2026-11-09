@@ -1,66 +1,164 @@
 
 export const species={
   fleabane:{
-    name:"fleabane",axiom:"X",
-    rules:{X:"F[+L]F[-L]F[+X][-X]B",F:"FF"},
-    angle:25,stem:[46,95,55],flower:[232,139,169],
-    length:100,leafType:"narrow",leafSize:16,
-    flowerType:"daisy",flowerSize:22,petalCount:12
+    name:"Fleabane",
+    axiom:"X",
+    rules:{
+      X:"F[+L]F[-L][+X][-X]B",
+      F:"FF"
+    },
+    angle:25,
+    stem:[46,95,55],
+    flower:[232,139,169],
+    length:100,
+    leafType:"narrow",
+    leafSize:16,
+    flowerType:"daisy",
+    flowerSize:22,
+    petalCount:12
   },
+
   clover:{
-    name:"clover",axiom:"X",
-    rules:{X:"F[+L][-L]F[+X][-X]B",F:"FF"},
-    angle:28,stem:[35,110,75],flower:[245,239,215],
-    length:65,leafType:"clover",leafSize:24,
-    flowerType:"clover",flowerSize:17,petalCount:3
+    name:"Clover",
+    axiom:"X",
+    rules:{
+      X:"F[+L][-L]F[+X][-X]B",
+      F:"FF"
+    },
+    angle:28,
+    stem:[35,110,75],
+    flower:[245,239,215],
+    length:65,
+    leafType:"clover",
+    leafSize:24,
+    flowerType:"clover",
+    flowerSize:17,
+    petalCount:3
   },
+
   violet:{
-    name:"violet",axiom:"X",
-    rules:{X:"F[-L][+L]F[+X]B",F:"FF"},
-    angle:35,stem:[105,160,90],flower:[105,55,170],
-    length:90,leafType:"oval",leafSize:22,
-    flowerType:"violet",flowerSize:25,petalCount:5
+    name:"Violet",
+    axiom:"X",
+    rules:{
+      X:"F[-L][+L]F[+X]B",
+      F:"FF"
+    },
+    angle:35,
+    stem:[105,160,90],
+    flower:[105,55,170],
+    length:90,
+    leafType:"oval",
+    leafSize:22,
+    flowerType:"violet",
+    flowerSize:25,
+    petalCount:5
   },
+
   cosmos:{
-    name:"cosmos",axiom:"X",
-    rules:{X:"F[+L]F[-L][+X]F[-X]B",F:"FF"},
-    angle:32,stem:[55,115,65],flower:[238,105,155],
-    length:95,leafType:"feathery",leafSize:19,
-    flowerType:"daisy",flowerSize:24,petalCount:8
+    name:"Cosmos",
+    axiom:"X",
+    rules:{
+      X:"F[+L]F[-L][+X]F[-X]B",
+      F:"FF"
+    },
+    angle:32,
+    stem:[55,115,65],
+    flower:[238,105,155],
+    length:95,
+    leafType:"feathery",
+    leafSize:19,
+    flowerType:"daisy",
+    flowerSize:24,
+    petalCount:8
   },
+
   aciano:{
-    name:"aciano",axiom:"X",
-    rules:{X:"F[+L][-L]F[+X]F[-X]B",F:"FF"},
-    angle:27,stem:[55,105,75],flower:[55,105,220],
-    length:100,leafType:"narrow",leafSize:18,
-    flowerType:"spiky",flowerSize:23,petalCount:14
+    name:"Aciano",
+    axiom:"X",
+    rules:{
+      X:"F[+L][-L]F[+X]F[-X]B",
+      F:"FF"
+    },
+    angle:27,
+    stem:[55,105,75],
+    flower:[55,105,220],
+    length:100,
+    leafType:"narrow",
+    leafSize:18,
+    flowerType:"spiky",
+    flowerSize:23,
+    petalCount:14
   },
+
   amapola:{
-    name:"amapola",axiom:"X",
-    rules:{X:"F[+L]F[-L]F[+X][-X]B",F:"FF"},
-    angle:22,stem:[65,115,65],flower:[220,55,65],
-    length:110,leafType:"lobed",leafSize:22,
-    flowerType:"poppy",flowerSize:30,petalCount:4
+    name:"Amapola",
+    axiom:"X",
+    rules:{
+      X:"F[+L]F[-L]F[+X][-X]B",
+      F:"FF"
+    },
+    angle:22,
+    stem:[65,115,65],
+    flower:[220,55,65],
+    length:110,
+    leafType:"lobed",
+    leafSize:22,
+    flowerType:"poppy",
+    flowerSize:30,
+    petalCount:4
   },
+
   dedalera:{
-    name:"dedalera",axiom:"X",
-    rules:{X:"F[+B]F[+X]F[-L]",F:"FF"},
-    angle:18,stem:[65,115,75],flower:[190,105,190],
-    length:95,leafType:"oval",leafSize:28,
-    flowerType:"bell",flowerSize:20,petalCount:5
+    name:"Dedalera",
+    axiom:"X",
+    rules:{
+      X:"F[+B]F[+X]F[-L]",
+      F:"FF"
+    },
+    angle:18,
+    stem:[65,115,75],
+    flower:[190,105,190],
+    length:95,
+    leafType:"oval",
+    leafSize:28,
+    flowerType:"bell",
+    flowerSize:20,
+    petalCount:5
   },
+
   lupino:{
-    name:"lupino",axiom:"X",
-    rules:{X:"F[+L]F[-L]F[+X]B",F:"FF"},
-    angle:24,stem:[45,105,65],flower:[130,85,195],
-    length:100,leafType:"palmate",leafSize:25,
-    flowerType:"spike",flowerSize:18,petalCount:5
+    name:"Lupino",
+    axiom:"X",
+    rules:{
+      X:"F[+L]F[-L]F[+X]B",
+      F:"FF"
+    },
+    angle:24,
+    stem:[45,105,65],
+    flower:[130,85,195],
+    length:100,
+    leafType:"palmate",
+    leafSize:25,
+    flowerType:"spike",
+    flowerSize:18,
+    petalCount:5
   },
+
   pasionaria:{
-    name:"pasionaria",axiom:"X",
-    rules:{X:"F[+L][-L]F[+X]F[-X]B",F:"FF"},
-    angle:38,stem:[45,105,65],flower:[125,75,190],
-    length:90,leafType:"lobed",leafSize:24,
-    flowerType:"passionflower",flowerSize:30,petalCount:10
+    name:"Pasionaria",
+    axiom:"X",
+    rules:{
+      X:"F[+L][-L]F[+X]F[-X]B",
+      F:"FF"
+    },
+    angle:38,
+    stem:[45,105,65],
+    flower:[125,75,190],
+    length:90,
+    leafType:"lobed",
+    leafSize:24,
+    flowerType:"passionflower",
+    flowerSize:30,
+    petalCount:10
   }
 };
