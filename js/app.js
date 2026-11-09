@@ -67,4 +67,8 @@ document.getElementById("reiniciarPlanta").addEventListener("click",()=>{
 });
 
 renderer=createPlantRenderer(holder);
+const observer=new ResizeObserver(()=>{
+  renderer.resize();
+});
+observer.observe(holder);
 changeSpecies(activeName);
