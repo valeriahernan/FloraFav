@@ -55,23 +55,30 @@ export function hybridizeSpecies(parentA, parentB) {
     return clamp(Math.round(avg + noise), min, max);
   };
 
-  return {
-    name: `${parentA.name.split(" × ")[0]} × ${parentB.name.split(" × ")[0]}`,
-    axiom: "X",
-    rules: {
-      X: choose(parentA.rules.X, parentB.rules.X),
-      F: choose(parentA.rules.F ?? "FF", parentB.rules.F ?? "FF")
+    return {
+    instance,
+
+    update(sentence,species,age){
+      current={sentence,species,age};
+      if(ready)instance.redraw();
     },
-    angle: blendValue(parentA.angle, parentB.angle, 10, 60),
-    stem: blendColor(parentA.stem, parentB.stem),
-    flower: blendColor(parentA.flower, parentB.flower),
-    length: blendValue(parentA.length, parentB.length, 20, 200),
-    leafType: choose(parentA.leafType, parentB.leafType),
-    leafSize: blendValue(parentA.leafSize, parentB.leafSize, 8, 80),
-    flowerType: choose(parentA.flowerType, parentB.flowerType),
-    flowerSize: blendValue(parentA.flowerSize, parentB.flowerSize, 10, 100),
-    petalCount: clamp(Math.round((parentA.petalCount + parentB.petalCount) / 2 + randomRange(-1, 1)), 3, 16),
-    hybrid: true,
-    mutationLevel: "Híbrido"
+
+    resize(){
+      if(!ready)return;
+
+      instance.resizeCanvas(
+        Math.max(1,holder.clientWidth),
+        Math.max(1,holder.clientHeight||280)
+      );
+
+      instance.redraw();
+    },
+
+    destroy(){
+      if(instance){
+        instance.remove();
+        ready=false;
+      }
+    }
   };
 }

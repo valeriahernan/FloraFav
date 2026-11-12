@@ -163,40 +163,73 @@
 
       </section>
 
-      <!-- JARDÍN -->
+<!-- GARDEN -->
 
-      <section id="garden-view" class="app-view" hidden>
+<section id="garden-view" class="app-view" hidden>
 
-        <div class="garden-header">
-          <div>
-            <div class="section-heading">
-              <span class="section-indicator"></span>
-              <span>My collection</span>
-            </div>
+  <header class="garden-header">
+    <div>
+      <div class="section-heading">
+        <span class="section-indicator"></span>
+        <span>My collection</span>
+      </div>
+      <h2>Garden</h2>
+      <p>Build your own little ecosystem.</p>
+    </div>
 
-            <h2>Garden</h2>
-            <p>Tus plantas guardadas y sus variaciones.</p>
-          </div>
+    <span class="garden-total" id="garden-total">0 plants</span>
+  </header>
 
-          <span class="garden-total" id="garden-total">0 plants</span>
+  <div class="garden-workspace">
+
+    <!-- PAISAJE -->
+
+    <section class="garden-landscape">
+
+      <div class="garden-sky">
+        <div class="garden-cloud cloud-one"></div>
+        <div class="garden-cloud cloud-two"></div>
+        
+        <div class="garden-stage" id="garden-stage">
+          <!-- Las plantas se colocarán aquí -->
         </div>
+      </div>
 
-        <div id="garden-empty" class="garden-empty">
-          <div class="empty-icon">✳</div>
-          <h3>Tu jardín está vacío</h3>
-          <p>
-            Genera una planta en el laboratorio y guárdala
-            para comenzar tu colección.
-          </p>
+      <div class="garden-grass">
+        <div class="grass-ground"></div>
+      </div>
 
-          <button type="button" id="goToLab">
-            Ir al laboratorio
-          </button>
-        </div>
+    </section>
 
-        <div id="garden-grid" class="garden-grid"></div>
+    <!-- COLECCIÓN -->
 
-      </section>
+    <aside class="garden-collection">
+
+      <div class="collection-heading">
+        <h3>Plant collection</h3>
+        <span id="garden-count">0</span>
+      </div>
+
+      <p class="collection-description">
+        Arrastra tus plantas al jardín.
+      </p>
+
+      <div id="garden-empty" class="garden-empty">
+        <div class="empty-icon">✳</div>
+        <p>Your collection is empty.</p>
+        <button type="button" id="goToLab">
+          Create a plant
+        </button>
+      </div>
+
+      <div id="garden-grid" class="garden-grid"></div>
+
+    </aside>
+
+  </div>
+
+</section>
+
 
       <!-- BARRA DE ESTADO -->
 
