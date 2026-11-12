@@ -159,18 +159,21 @@ function saveCurrentPlant(){
 // NAVEGACIÓN
 
 function setView(view){
-  const isGarden=view==="garden";
+  const isGarden = view === "garden";
 
-  labView.hidden=isGarden;
-  gardenView.hidden=!isGarden;
+  labView.hidden = isGarden;
+  gardenView.hidden = !isGarden;
 
-  labTab.classList.toggle("active",!isGarden);
-  gardenTab.classList.toggle("active",isGarden);
+  labView.classList.toggle("active", !isGarden);
+  gardenView.classList.toggle("active", isGarden);
+
+  labTab.classList.toggle("active", !isGarden);
+  gardenTab.classList.toggle("active", isGarden);
 
   if(isGarden){
     renderGarden();
   }else{
-    renderer.resize();
+    requestAnimationFrame(() => renderer.resize());
   }
 }
 
