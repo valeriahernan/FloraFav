@@ -528,3 +528,8 @@ body {
     flex-wrap: wrap;
   }
 }
+
+/* Corregir visibilidad de secciones y estados vacíos */
+[hidden] {
+  display: none !important;
+}
